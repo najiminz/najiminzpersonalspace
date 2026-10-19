@@ -993,38 +993,38 @@ def s_kaamatan(pen):
 
 
 def jalur_gemilang(pen, px, top, w=440, h=280):
+    """Jalur Gemilang flying to the right from a pole at x=px: canton at the upper hoist, red stripe on top."""
     stripes = 14
 
-    def edge(y):
-        return f"Q{px - w * 0.25},{y + 26} {px - w * 0.5},{y} T{px - w},{y}"
+    def band(y0, y1):
+        return (f"M{px},{y0:.1f} Q{px + w * 0.25},{y0 + 26:.1f} {px + w * 0.5},{y0:.1f} T{px + w},{y0:.1f} "
+                f"L{px + w},{y1:.1f} Q{px + w * 0.75},{y1 - 26:.1f} {px + w * 0.5},{y1:.1f} T{px},{y1:.1f} Z")
 
-    outline = f"M{px},{top} {edge(top)} L{px - w},{top + h} " \
-              f"Q{px - w * 0.75},{top + h - 26} {px - w * 0.5},{top + h} T{px},{top + h} Z"
+    outline = band(top, top + h)
     inner = ""
     for i in range(stripes):
         y = top + h * i / stripes
-        inner += (f'<path d="M{px},{y:.1f} {edge(y)} L{px - w},{y + h / stripes:.1f} '
-                  f'Q{px - w * 0.75},{y + h / stripes - 26:.1f} {px - w * 0.5},{y + h / stripes:.1f} '
-                  f'T{px},{y + h / stripes:.1f} Z" fill="{pen.f("#e53935" if i % 2 == 0 else "#ffffff")}" '
+        inner += (f'<path d="{band(y, y + h / stripes)}" fill="{pen.f("#e53935" if i % 2 == 0 else "#ffffff")}" '
                   f'stroke="{INK}" stroke-width="{pen.sw(1.4)}"/>')
     cw, ch = w * 0.5, h * 8 / 14
-    inner += pen.path(f"M{px},{top} Q{px - cw * 0.5},{top + 26} {px - cw},{top} L{px - cw},{top + ch} "
-                      f"Q{px - cw * 0.5},{top + ch + 20} {px},{top + ch} Z", fill="#1a237e", w=DW)
-    mx, my = px - cw * 0.55, top + ch * 0.52
-    inner += pen.path(f"M{mx - 10},{my - 52} A54,54 0 1 0 {mx - 10},{my + 52} A44,44 0 1 1 {mx - 10},{my - 52} Z",
+    inner += pen.path(f"M{px},{top} Q{px + cw * 0.5},{top + 26} {px + cw},{top} L{px + cw},{top + ch} "
+                      f"Q{px + cw * 0.5},{top + ch + 20} {px},{top + ch} Z", fill="#1a237e", w=DW)
+    mx, my = px + cw * 0.4, top + ch * 0.54
+    # crescent nearer the pole, opening towards the 14-point star
+    inner += pen.path(f"M{mx + 10},{my - 52} A54,54 0 1 0 {mx + 10},{my + 52} A44,44 0 1 1 {mx + 10},{my - 52} Z",
                       fill="#fdd835", w=DW)
-    inner += pen.path(star_d(mx + 30, my, 34, 16, 14), fill="#fdd835", w=DW)
+    inner += pen.path(star_d(mx + 58, my, 34, 16, 14), fill="#fdd835", w=DW)
     return pen.clipped(outline, inner) + pen.path(outline, fill="none")
 
 
 def s_hari_kebangsaan(pen):
-    px = 550
+    px = 130
     out = pen.tube(f"M{px},1100 L{px},400", 14, "#9e9e9e")
     out += pen.circle(px, 396, 12, fill="#fdd835", sw=DW)
-    out += jalur_gemilang(pen, px - 6, 420)
-    out += kid(pen, "amir", 640, GY, 1.3, la=(-70, -112), ra=(-70, -160))
-    out += kid(pen, "mei", 200, GY, 1.0, la=(-90, -300), ra=(64, -112))
-    out += kid(pen, "ravi", 800, GY, 0.95, la=(-64, -112), ra=(70, -300))
+    out += jalur_gemilang(pen, px + 6, 420)
+    out += kid(pen, "amir", 221, GY, 1.3, la=(-70, -112), ra=(-70, -160))
+    out += kid(pen, "mei", 500, GY, 1.0, la=(-90, -300), ra=(64, -112))
+    out += kid(pen, "ravi", 760, GY, 0.95, la=(-64, -112), ra=(70, -300))
     return out, W
 
 
