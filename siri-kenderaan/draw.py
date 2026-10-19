@@ -23,6 +23,8 @@ GLASS = "#8fd3f4"
 class Pen:
     """Holds the drawing mode: line art (all white) or the colored reference."""
 
+    weight = 1.0  # global line-weight multiplier (a book can set Pen.weight for thicker lines)
+
     def __init__(self, colored, prefix):
         self.colored = colored
         self.p = prefix
@@ -39,7 +41,7 @@ class Pen:
         return color if self.colored else "#ffffff"
 
     def sw(self, w):
-        return round(w * self.k, 2)
+        return round(w * self.k * self.weight, 2)
 
     def path(self, d, fill="#fff", w=LW, extra=""):
         return (f'<path d="{d}" fill="{self.f(fill)}" stroke="{INK}" stroke-width="{self.sw(w)}" '

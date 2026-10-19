@@ -5,7 +5,7 @@ import { readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const build = join(dirname(fileURLToPath(import.meta.url)), 'build');
+const build = process.env.BUILD_DIR || join(dirname(fileURLToPath(import.meta.url)), 'build');
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 2480, height: 3508 }, deviceScaleFactor: 1 });
 for (const f of readdirSync(build).filter((f) => f.endsWith('.html')).sort()) {

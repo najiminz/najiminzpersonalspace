@@ -102,39 +102,47 @@ def butterfly(x, y, s, c1, c2, rot=0):
 
 # ---------------------------------------------------------------- title + sign
 
-def title():
-    font_size = 150
-    word = "KENDERAAN"
+LETTER_COLORS = ["e8402f", "ff9800", "fdd835", "43a047", "1e88e5", "8e24aa", "ec407a", "00acc1", "e8402f"]
+
+
+def bubbly(word, base_y=318, max_w=820, font_size=150, colors=LETTER_COLORS):
+    """Big multicolor bubble letters with a white rim, navy outline, shadow and stitching."""
     font = ImageFont.truetype(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts", "Fredoka-Bold.ttf"),
                               font_size)
     adv = [font.getlength(ch) for ch in word]
     gap = -4
     total = sum(adv) + gap * (len(word) - 1)
-    scale = min(1.0, 820 / total)
+    scale = min(1.0, max_w / total)
     fs = font_size * scale
     x = (W - total * scale) / 2
-    colors = ["e8402f", "ff9800", "fdd835", "43a047", "1e88e5", "8e24aa", "ec407a", "00acc1", "e8402f"]
     out = ""
     for i, ch in enumerate(word):
         cx = x + adv[i] * scale / 2
         dy = -10 if i % 2 else 6
         rot = -5 if i % 2 else 4
-        base = 318 + dy
+        base = base_y + dy
         attrs = (f'x="{cx:.1f}" y="{base}" text-anchor="middle" font-family="Fredoka" font-weight="700" '
                  f'font-size="{fs:.1f}" transform="rotate({rot} {cx:.1f} {base - fs * 0.35:.1f})"')
         out += f'<text {attrs} fill="{NAVY}" stroke="{NAVY}" stroke-width="22" stroke-linejoin="round" dx="4" dy="8">{ch}</text>'
         out += f'<text {attrs} fill="#fff" stroke="#fff" stroke-width="20" stroke-linejoin="round">{ch}</text>'
-        out += f'<text {attrs} fill="url(#g{colors[i]})" stroke="{NAVY}" stroke-width="5" stroke-linejoin="round">{ch}</text>'
+        out += f'<text {attrs} fill="url(#g{colors[i % len(colors)]})" stroke="{NAVY}" stroke-width="5" stroke-linejoin="round">{ch}</text>'
         out += (f'<text {attrs} fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.2" '
                 f'stroke-dasharray="7 6" transform="rotate({rot} {cx:.1f} {base - fs * 0.35:.1f}) '
                 f'translate({cx:.1f} {base - fs * 0.35:.1f}) scale(0.88) translate({-cx:.1f} {-(base - fs * 0.35):.1f})">'
                 f'{ch}</text>')
         x += adv[i] * scale + gap * scale
-    # small "SIRI" ribbon above the title
-    out += p("M330,150 L575,150 L560,172 L575,194 L330,194 L345,172 Z", "#e8402f", stroke=NAVY, w=4)
-    out += (f'<text x="452" y="184" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="30" '
-            f'letter-spacing="3" fill="#fff">SIRI</text>')
     return out
+
+
+def ribbon(label, y=150):
+    out = p(f"M330,{y} L575,{y} L560,{y + 22} L575,{y + 44} L330,{y + 44} L345,{y + 22} Z", "#e8402f", stroke=NAVY, w=4)
+    out += (f'<text x="452" y="{y + 34}" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="30" '
+            f'letter-spacing="3" fill="#fff">{label}</text>')
+    return out
+
+
+def title():
+    return bubbly("KENDERAAN") + ribbon("SIRI")
 
 
 def sign():

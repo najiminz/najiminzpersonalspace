@@ -75,7 +75,7 @@ def wordmark(x, y, size=40, tagline=True):
     return out
 
 
-def sign():
+def sign(series="Siri Kenderaan"):
     board = "M232,96 Q450,82 672,96 L664,176 Q450,188 240,176 Z"
     out = ""
     rnd = [(214, 100, -30), (230, 74, -60), (290, 80, 20), (612, 80, -20), (672, 74, 60), (690, 100, 30),
@@ -88,7 +88,7 @@ def sign():
     out += text(452, 155, 'Buku <tspan fill="#ffd54f">Mewarna</tspan>', 54, fill="#ffffff", weight=700,
                 extra=f'stroke="{OUTLINE}" stroke-width="8" stroke-linejoin="round" paint-order="stroke"')
     out += f'<rect x="322" y="176" width="260" height="44" rx="22" fill="#ec407a" stroke="#ffffff" stroke-width="4"/>'
-    out += text(452, 207, "Siri Kenderaan", 26, fill="#ffffff", weight=700)
+    out += text(452, 207, series, 26, fill="#ffffff", weight=700)
     return out
 
 
@@ -121,21 +121,25 @@ def icon_smile(cx, cy):
             + p(f"M{cx - 16},{cy + 8} Q{cx},{cy + 24} {cx + 16},{cy + 8}", "none", stroke=NAVY, w=3.5))
 
 
-def card():
+BLURB = ["Buku ini direka khas untuk membantu",
+         "kanak-kanak prasekolah dan awal tahun",
+         "sekolah rendah mengenal 30 jenis kenderaan",
+         "di darat, laut dan udara sambil mewarna."]
+TILES = [("#f8bbd0", icon_crayon, ["Melatih", "kemahiran", "motor halus"]),
+         ("#bbdefb", icon_brain, ["Merangsang", "kreativiti &amp;", "imaginasi"]),
+         ("#fff59d", icon_car, ["Mengenal", "30 jenis", "kenderaan"]),
+         ("#c5e1a5", icon_smile, ["Ilustrasi", "menarik dan", "mesra kanak-kanak"])]
+TAGLINE = "Mewarna, Meneroka, Membangun Masa Depan"
+BOOKS = ["Mewarna", "Melukis", "Meneroka", "Berkarya", "Berakhlak"]
+
+
+def card(lines=BLURB, tiles=TILES, tagline=TAGLINE):
     out = (f'<rect x="132" y="232" width="642" height="420" rx="26" fill="#fffaf0" fill-opacity="0.96" '
            f'stroke="#f3d9a4" stroke-width="3"/>'
            f'<rect x="146" y="246" width="614" height="392" rx="20" fill="none" stroke="#e7c27a" stroke-width="2.5" '
            f'stroke-dasharray="9 7"/>')
-    lines = ["Buku ini direka khas untuk membantu",
-             "kanak-kanak prasekolah dan awal tahun",
-             "sekolah rendah mengenal 30 jenis kenderaan",
-             "di darat, laut dan udara sambil mewarna."]
     for i, line in enumerate(lines):
         out += text(176, 296 + i * 34, line, 23, fill="#263238", weight=400, anchor="start")
-    tiles = [("#f8bbd0", icon_crayon, ["Melatih", "kemahiran", "motor halus"]),
-             ("#bbdefb", icon_brain, ["Merangsang", "kreativiti &amp;", "imaginasi"]),
-             ("#fff59d", icon_car, ["Mengenal", "30 jenis", "kenderaan"]),
-             ("#c5e1a5", icon_smile, ["Ilustrasi", "menarik dan", "mesra kanak-kanak"])]
     for i, (bg, icon, label) in enumerate(tiles):
         x = 160 + i * 150
         out += f'<rect x="{x}" y="440" width="136" height="146" rx="16" fill="{bg}"/>'
@@ -144,7 +148,7 @@ def card():
             out += text(x + 68, 538 + j * 17, line, 15 if len(line.replace("&amp;", "&")) < 16 else 13.5, fill="#263238", weight=500)
     out += (f'<rect x="196" y="598" width="514" height="40" rx="20" fill="#ffffff" stroke="#ce93d8" stroke-width="2.5" '
             f'stroke-dasharray="8 6"/>')
-    out += text(453, 625, "Mewarna, Meneroka, Membangun Masa Depan", 19, fill="#6a1b9a", weight=600,
+    out += text(453, 625, tagline, 19, fill="#6a1b9a", weight=600,
                 extra='font-style="italic"')
     return out
 
@@ -227,10 +231,9 @@ def held_book():
     return out
 
 
-def book_stack(x=-10, y=820):
+def book_stack(x=-10, y=820, labels=BOOKS):
     out = ""
-    books = [("#ec407a", "Mewarna"), ("#1e88e5", "Melukis"), ("#fb8c00", "Meneroka"), ("#43a047", "Berkarya"),
-             ("#8e24aa", "Berakhlak")]
+    books = zip(("#ec407a", "#1e88e5", "#fb8c00", "#43a047", "#8e24aa"), labels)
     for i, (c, label) in enumerate(books):
         by = y + i * 42
         dx = (i % 2) * 8
@@ -325,17 +328,20 @@ def defs():
             "</defs>")
 
 
-def back_cover_svg(px_w=2480, px_h=3508):
+def children():
+    return girl() + boy() + held_book()
+
+
+def back_cover_svg(px_w=2480, px_h=3508, series="Siri Kenderaan", lines=BLURB, tiles=TILES, tagline=TAGLINE,
+                   books=BOOKS, kids=children):
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{px_w}" height="{px_h}" viewBox="0 0 {W} {H}" '
            f'preserveAspectRatio="none">', defs(), background()]
     out.append(wordmark(36, 58, 40))
-    out.append(card())
-    out.append(sign())
+    out.append(card(lines, tiles, tagline))
+    out.append(sign(series))
     out.append(butterfly(110, 640, 0.9, "#ff9800", "#fdd835", rot=-12))
-    out.append(book_stack())
-    out.append(girl())
-    out.append(boy())
-    out.append(held_book())
+    out.append(book_stack(labels=books))
+    out.append(kids())
     out.append(cat())
     for x, y, s in ((30, 1060, 1.2), (250, 1050, 1.0), (680, 1052, 1.1), (880, 1056, 1.2), (20, 1265, 1.0),
                     (440, 1270, 1.0), (890, 1268, 1.0)):
