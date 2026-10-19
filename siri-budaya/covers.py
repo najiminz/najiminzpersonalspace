@@ -8,6 +8,7 @@ import math
 
 import back_cover as BC
 import cover as C
+import logos
 from characters import kid, kid_hands
 from draw import Pen, blob_d, palm
 from subjects import big_hibiscus, rumah_melayu, wau
@@ -42,8 +43,7 @@ def front_background():
 
 
 def logo_badge():
-    return ('<rect x="22" y="20" width="248" height="84" rx="18" fill="#ffffff" fill-opacity="0.92" '
-            'stroke="#1a3a8f" stroke-width="2.5"/>' + BC.wordmark(38, 66, 42))
+    return logos.badge()
 
 
 def front_cover_svg(px_w=2480, px_h=3508):

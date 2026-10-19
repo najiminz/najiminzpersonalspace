@@ -23,7 +23,7 @@ Bulatan (donat) · Segi Tiga (khemah) · Segi Empat Sama (kotak hadiah) · Segi 
 - `siri-10-abc-nombor-bentuk-A4-300dpi.pdf`: front cover, 30 pages and back cover (32 pages, lossless)
 - `svg/*.svg`: vector versions
 
-**Before printing:** the ISBN and barcode on the back cover are placeholders, and the FSKXpert/UPSI logos are recreated as text.
+**Before printing:** the ISBN and barcode on the back cover are placeholders.
 
 ## Regenerating
 ```

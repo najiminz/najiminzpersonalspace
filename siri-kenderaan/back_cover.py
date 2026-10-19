@@ -10,6 +10,8 @@ import os
 
 from PIL import ImageFont
 
+import logos
+
 import vehicles as V
 from cover import NAVY, OUTLINE, butterfly, ell, flower, p, vehicle
 from draw import Pen, blob_d
@@ -69,14 +71,10 @@ def background():
 
 # ---------------------------------------------------------------- top: publisher mark, sign, card
 
-def wordmark(x, y, size=40, tagline=True):
-    out = (f'<text x="{x}" y="{y}" font-family="Liberation Sans, Arial, sans-serif" font-weight="700" '
-           f'font-style="italic" font-size="{size}" fill="#1a3a8f" letter-spacing="-1">FSK'
-           f'<tspan fill="#e53935">X</tspan>pert</text>')
-    if tagline:
-        out += (f'<text x="{x + 2}" y="{y + size * 0.42:.0f}" font-family="Liberation Sans, Arial, sans-serif" '
-                f'font-weight="700" font-size="{size * 0.3:.0f}" fill="#1a3a8f">Pendidikan • Inovasi • Komuniti</text>')
-    return out
+def fsk_badge(x=24, y=22, h=56):
+    """FSKXpert logo on a white tag, top-left of the back cover."""
+    return (f'<rect x="{x}" y="{y}" width="{logos.width("fskxpert", h) + 28:.1f}" height="{h + 20}" rx="16" '
+            f'fill="#ffffff" stroke="#1a3a8f" stroke-width="2.5"/>' + logos.logo("fskxpert", x + 14, y + 10, h))
 
 
 def sign(series="Siri Kenderaan"):
@@ -293,21 +291,14 @@ def barcode(x, y):
 
 def panel():
     out = f'<rect x="40" y="1060" width="825" height="196" rx="22" fill="#ffffff" fill-opacity="0.97" stroke="#e0e0e0" stroke-width="2"/>'
-    out += wordmark(70, 1110, 46)
+    out += logos.logo("fskxpert", 64, 1074, 60)
     for i, line in enumerate(["Fakulti Sains Kemanusiaan", "Universiti Pendidikan Sultan Idris",
                               "Tanjong Malim, Perak."]):
         out += text(72, 1152 + i * 20, line, 15, fill="#263238", weight=400, anchor="start")
     out += f'<circle cx="82" cy="1226" r="11" fill="#1a3a8f"/>'
     out += p("M71,1226 L93,1226 M82,1215 Q76,1226 82,1237 Q88,1226 82,1215", "none", stroke="#ffffff", w=1.6)
     out += text(100, 1232, "fskxpert.upsi.my", 17, fill="#263238", weight=500, anchor="start")
-    out += (f'<text x="470" y="1128" text-anchor="middle" font-family="Liberation Serif, serif" font-size="26" '
-            f'fill="#1a3a8f">UNIVERSITI</text>'
-            f'<text x="470" y="1156" text-anchor="middle" font-family="Liberation Serif, serif" font-size="26" '
-            f'fill="#1a3a8f">PENDIDIKAN</text>'
-            f'<text x="470" y="1184" text-anchor="middle" font-family="Liberation Serif, serif" font-size="26" '
-            f'fill="#1a3a8f">SULTAN IDRIS</text>'
-            f'<text x="470" y="1210" text-anchor="middle" font-family="Liberation Serif, serif" font-size="12.5" '
-            f'fill="#1a3a8f">SULTAN IDRIS EDUCATION UNIVERSITY</text>')
+    out += logos.logo("upsi", 470 - logos.width("upsi", 110) / 2, 1086, 110)
     out += f'<rect x="604" y="1072" width="248" height="62" rx="12" fill="#ffffff" stroke="#1a3a8f" stroke-width="2.5"/>'
     out += text(728, 1096, "Prof. Madya Dr. Kamarul Ismail", 14.5, fill="#1a3a8f", weight=600)
     out += f'<circle cx="634" cy="1116" r="12" fill="#25d366"/>'
@@ -342,7 +333,7 @@ def back_cover_svg(px_w=2480, px_h=3508, series="Siri Kenderaan", lines=BLURB, t
                    books=BOOKS, kids=children):
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{px_w}" height="{px_h}" viewBox="0 0 {W} {H}" '
            f'preserveAspectRatio="none">', defs(), background()]
-    out.append(wordmark(36, 58, 40))
+    out.append(fsk_badge())
     out.append(card(lines, tiles, tagline))
     out.append(sign(series))
     out.append(butterfly(110, 640, 0.9, "#ff9800", "#fdd835", rot=-12))

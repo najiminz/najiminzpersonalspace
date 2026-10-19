@@ -9,6 +9,8 @@ import os
 
 from PIL import ImageFont
 
+import logos
+
 import vehicles as V
 from draw import Pen, blob_d, star_d
 
@@ -308,7 +310,7 @@ def defs():
 def cover_svg(px_w=2480, px_h=3508):
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{px_w}" height="{px_h}" viewBox="0 0 {W} {H}" '
            f'preserveAspectRatio="none">', defs(), background()]
-    out.append(vehicle(V.helikopter, 360, 90, 0.17, prefix="heli"))
+    out.append(vehicle(V.helikopter, 400, 92, 0.17, prefix="heli"))
     out.append(vehicle(V.belon_udara, 640, 26, 0.13, prefix="bal"))
     out.append(tree())
     out.append(butterfly(70, 520, 1.0, "#ff9800", "#fdd835", rot=-15))
@@ -326,5 +328,6 @@ def cover_svg(px_w=2480, px_h=3508):
     out.append(title())
     out.append(sign())
     out.append(badge())
+    out.append(logos.badge())
     out.append("</svg>")
     return "\n".join(out)

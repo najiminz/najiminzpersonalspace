@@ -10,7 +10,7 @@ Thirty coloring pages about Malaysian culture, with a front and back cover. They
   - **Mei**, a Chinese girl
   - **Ravi**, an Indian boy
   - **Lina**, a Kadazan girl
-- **FSKXpert logo** on the front cover. Publisher details are on the back cover.
+- **Official UPSI and FSKXpert logos** on the front and back covers. Publisher details are on the back cover.
 
 | # | Halaman | # | Halaman | # | Halaman |
 |---|---------|---|---------|---|---------|
@@ -30,7 +30,7 @@ Thirty coloring pages about Malaysian culture, with a front and back cover. They
 - `siri-8-budaya-malaysia-A4-300dpi.pdf`: front cover, 30 pages and back cover (32 pages, lossless)
 - `svg/*.svg`: vector versions
 
-**Before printing:** the ISBN and barcode on the back cover are still placeholders, and the FSKXpert/UPSI logos are recreated as text.
+**Before printing:** the ISBN and barcode on the back cover are still placeholders.
 
 ## Regenerating
 ```
