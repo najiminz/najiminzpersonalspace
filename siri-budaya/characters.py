@@ -8,15 +8,17 @@ kid(pen, who, x, y, s, la, ra, outfit, sit) draws a child standing (or sitting)
 with feet at page point (x, y). la / ra are the left / right hand positions in
 the child's own coordinates (feet at 0,0, up is negative y, unscaled).
 """
+import math
+
 from draw import DW, INK, LW, blob_d
 
 CAST = {
     "amir": dict(skin="#f2c39b", hair="amir", outfit="tshirt", top="#42a5f5", bottom="#1e3f8f"),
-    "aisyah": dict(skin="#ffd8b8", hair="tudung", outfit="kurung", top="#f48fb1", bottom="#f06292",
+    "aisyah": dict(skin="#ffd8b8", lashes=True, hair="tudung", outfit="kurung", top="#f48fb1", bottom="#f06292",
                    tudung="#ce93d8"),
-    "mei": dict(skin="#ffe1c4", hair="mei", outfit="samfu", top="#e53935", bottom="#212121"),
+    "mei": dict(skin="#ffe1c4", lashes=True, hair="mei", outfit="samfu", top="#e53935", bottom="#212121"),
     "ravi": dict(skin="#c98a5e", hair="ravi", outfit="kurta", top="#ffb300", bottom="#fff8e1"),
-    "lina": dict(skin="#f0c39a", hair="lina", outfit="kaamatan", top="#212121", bottom="#212121"),
+    "lina": dict(skin="#f0c39a", lashes=True, hair="lina", outfit="kaamatan", top="#212121", bottom="#212121"),
 }
 
 SIT = 92  # how far the upper body drops when sitting
@@ -26,8 +28,27 @@ def solid(d, color=INK):
     return f'<path d="{d}" fill="{color}"/>'
 
 
+def motif(pen, x, y, r, color):
+    """Tiny five-petal flower used as a fabric print."""
+    out = ""
+    for k in range(5):
+        a = math.radians(-90 + 72 * k)
+        out += pen.circle(x + r * 0.85 * math.cos(a), y + r * 0.85 * math.sin(a), r * 0.55, fill=color, sw=1.4)
+    return out + pen.circle(x, y, r * 0.38, fill="#fdd835", sw=1.2)
+
+
+def zigzag(pen, x0, x1, y, h=6, step=12):
+    d = f"M{x0},{y}" + "".join(f" L{x + step / 2:.1f},{y - h if i % 2 == 0 else y + h} L{x + step:.1f},{y}"
+                               for i, x in enumerate(range(int(x0), int(x1) - step + 1, step)))
+    return pen.path(d, fill="none", w=1.6)
+
+
 def face(pen, look, cx=0, cy=-262, gap=24, small=False):
     out = ""
+    if look.get("lashes"):
+        for ex in (-gap, gap):
+            sgn = 1 if ex > 0 else -1
+            out += pen.path(f"M{cx + ex + sgn * 8},{cy - 8} L{cx + ex + sgn * 15},{cy - 14}", fill="none", w=DW - 0.4)
     for ex in (-gap, gap):
         out += f'<ellipse cx="{cx + ex}" cy="{cy}" rx="{8.5 if small else 9.5}" ry="{11.5 if small else 12.5}" fill="{INK}"/>'
         out += f'<circle cx="{cx + ex + 3}" cy="{cy - 5}" r="3.6" fill="#fff"/>'
@@ -56,8 +77,13 @@ def legs(pen, look, outfit, sit):
     elif outfit not in ("kurung", "kaamatan"):
         for x in (-40, 4):
             out += pen.rect(x, -116, 36, 106, fill=look["bottom"], rx=6)
+    if outfit not in ("tshirt", "kurung", "kaamatan"):
+        for x in (-22, 22):
+            out += pen.line(x - 14, -34, x + 14, -34, sw=1.8)
     for x in (-24, 24):
         out += pen.ellipse(x, -9, 27, 13, fill="#5d4037", sw=LW)
+        out += pen.path(f"M{x - 24},-4 Q{x},6 {x + 24},-4", fill="none", w=1.8)
+        out += pen.circle(x + (8 if x > 0 else -8), -14, 2.6, fill="#ffffff", sw=1.2)
     return out
 
 
@@ -67,45 +93,60 @@ def torso(pen, look, outfit):
     if outfit == "tshirt":
         out += pen.path("M-50,-114 L50,-114 L46,-66 L6,-66 L0,-88 L-6,-66 L-46,-66 Z", fill=bottom)
         out += pen.path("M-44,-202 Q-58,-196 -56,-150 L-52,-108 L52,-108 L56,-150 Q58,-196 44,-202 Z", fill=top)
-        out += pen.path("M-16,-202 Q0,-188 16,-202", fill="none", w=DW)
+        out += pen.path("M-16,-202 Q0,-188 16,-202 M-20,-200 Q0,-180 20,-200", fill="none", w=DW)
+        out += pen.rect(-40, -176, 26, 24, fill="#ffffff", rx=4, sw=1.8)
+        out += pen.path("M-40,-168 L-14,-168", fill="none", w=1.4)
+        out += pen.path("M20,-170 l5,10 11,1 -8,7 2,11 -10,-6 -10,6 2,-11 -8,-7 11,-1 Z", fill="#fdd835", w=1.6)
+        out += pen.path("M-44,-122 L-38,-122 M38,-122 L44,-122 M-46,-74 L-8,-74 M8,-74 L46,-74", fill="none", w=1.6)
     elif outfit in ("bajumelayu", "silat"):
         out += pen.path("M-46,-202 Q-60,-196 -58,-150 L-56,-100 L56,-100 L58,-150 Q60,-196 46,-202 Z", fill=top)
         out += pen.rect(-12, -206, 24, 14, fill=top, rx=3, sw=DW)
         out += pen.line(0, -192, 0, -140, sw=DW)
         for y in (-180, -164, -148):
             out += pen.circle(0, y, 3.4, fill="#fdd835", sw=1.6)
+        out += pen.rect(-42, -172, 24, 18, fill=look["top"], rx=2, sw=1.8)
         samp = "M-60,-128 L60,-128 L66,-58 L-66,-58 Z"
         sc = "#fdd835" if outfit == "bajumelayu" else "#c62828"
         out += pen.path(samp, fill=sc)
-        out += pen.clipped(samp, "".join(pen.path(f"M{x},-128 L{x + 40},-58", fill="none", w=1.6)
-                                         for x in range(-100, 80, 20)))
+        pattern = pen.line(-80, -76, 80, -76, sw=1.6) + zigzag(pen, -78, 80, -68, 5, 10)
+        for x in range(-56, 70, 28):
+            pattern += pen.path(f"M{x},-118 l10,12 -10,12 -10,-12 Z", fill="#e53935" if outfit == "bajumelayu"
+                                else "#fdd835", w=1.4)
+        out += pen.clipped(samp, pattern)
         out += pen.path(samp, fill="none")
         out += pen.rect(-62, -134, 124, 12, fill=sc, rx=4, sw=DW)
     elif outfit == "kurung":
         out += pen.path("M-58,-112 L58,-112 L70,-16 L-70,-16 Z", fill=bottom)
-        for x, y in ((-40, -40), (-6, -70), (30, -36), (44, -84), (-30, -92), (6, -30)):
-            out += pen.circle(x, y, 6, fill="#ffffff", sw=1.6)
+        for x, y in ((-40, -40), (-4, -60), (34, -36), (40, -60), (-26, -64)):
+            out += motif(pen, x, y, 8, "#ffffff")
+        out += pen.rect(-70, -34, 140, 12, fill="#fdd835", sw=1.6)
         out += pen.path("M-46,-202 Q-62,-192 -62,-150 L-70,-74 L70,-74 L62,-150 Q62,-192 46,-202 Z", fill=top)
-        for x, y in ((-34, -120), (30, -150), (-20, -96), (36, -100)):
-            out += pen.circle(x, y, 7, fill="#fff59d", sw=1.6)
+        for x, y in ((-34, -128), (32, -150), (-18, -98), (38, -104)):
+            out += motif(pen, x, y, 9, "#fff59d")
+        out += pen.path("M-66,-86 L66,-86", fill="none", w=1.6)
     elif outfit == "samfu":
         out += pen.path("M-46,-202 Q-60,-196 -58,-150 L-56,-100 L56,-100 L58,-150 Q60,-196 46,-202 Z", fill=top)
         out += pen.rect(-16, -210, 32, 14, fill=top, rx=4, sw=DW)
         out += pen.path("M-4,-196 Q20,-180 44,-176", fill="none", w=DW)
         for x, y in ((10, -189), (26, -181)):
             out += pen.path(f"M{x - 8},{y} L{x + 8},{y}", fill="none", w=LW)
-        out += pen.path("M-56,-108 L56,-108", fill="none", w=DW)
+        out += pen.path("M-56,-108 L56,-108 M-56,-116 L56,-116", fill="none", w=1.8)
+        for x, y in ((-30, -160), (30, -136), (-20, -128)):
+            out += motif(pen, x, y, 8, "#ffcdd2")
     elif outfit == "kurta":
         out += pen.path("M-46,-202 Q-60,-196 -58,-150 L-60,-62 L60,-62 L58,-150 Q60,-196 46,-202 Z", fill=top)
         out += pen.rect(-8, -204, 16, 64, fill="#fff8e1", rx=3, sw=DW)
         for y in (-190, -172, -154):
             out += pen.circle(0, y, 3, fill="#8d6e63", sw=1.4)
         out += pen.path("M-60,-80 L-40,-80 M40,-80 L60,-80", fill="none", w=DW)
-        out += pen.path("M-58,-74 L58,-74", fill="none", w=DW)
+        out += pen.path("M-58,-74 L58,-74 M-59,-90 L59,-90", fill="none", w=1.8)
+        out += zigzag(pen, -56, 58, -82, 4, 10)
+        out += pen.path("M-22,-200 Q0,-186 22,-200", fill="none", w=1.6)
     elif outfit == "kaamatan":
         out += pen.path("M-60,-112 L60,-112 L68,-16 L-68,-16 Z", fill=bottom)
         for y in (-80, -50):
             out += pen.rect(-66, y, 132, 12, fill="#fdd835", sw=DW)
+            out += zigzag(pen, -62, 64, y + 6, 4, 10)
         out += pen.path("M-46,-202 Q-60,-196 -58,-150 L-56,-106 L56,-106 L58,-150 Q60,-196 46,-202 Z", fill=top)
         out += pen.path("M-30,-202 L-2,-150 L30,-202", fill="none", w=DW)
         out += pen.path("M-50,-196 L50,-118 L44,-108 L-56,-184 Z", fill="#e53935", w=DW)
@@ -116,7 +157,11 @@ def torso(pen, look, outfit):
 
 
 def hand(pen, look, pos):
-    return pen.circle(pos[0], pos[1], 15, fill=look["skin"], sw=LW)
+    side = 1 if pos[0] > 0 else -1
+    out = pen.ellipse(pos[0] - side * 12, pos[1] - 8, 7, 9, fill=look["skin"], sw=DW, rot=side * 30)
+    out += pen.circle(pos[0], pos[1], 15, fill=look["skin"], sw=LW)
+    return out + pen.path(f"M{pos[0] - 5},{pos[1] + 6} L{pos[0] - 5},{pos[1] + 12} M{pos[0] + 3},{pos[1] + 7} "
+                          f"L{pos[0] + 3},{pos[1] + 13}", fill="none", w=1.4)
 
 
 def arm(pen, look, outfit, side, hand):
@@ -130,6 +175,10 @@ def arm(pen, look, outfit, side, hand):
         out += pen.tube(f"M{sx},-190 L{mx:.1f},{my:.1f}", 30, sleeve)
     else:
         out += pen.tube(f"M{sx},-190 L{hx},{hy}", 26, sleeve)
+        a, b = 0.8, 0.9
+        cuff = {"bajumelayu": "#fdd835", "kurta": "#fff8e1", "kaamatan": "#fdd835", "samfu": "#fdd835"}.get(outfit, sleeve)
+        out += pen.tube(f"M{sx + (hx - sx) * a:.1f},{-190 + (hy + 190) * a:.1f} "
+                        f"L{sx + (hx - sx) * b:.1f},{-190 + (hy + 190) * b:.1f}", 26, cuff)
     return out
 
 
@@ -152,8 +201,10 @@ def hair_back(pen, look):
 def hair_front(pen, look):
     h = look["hair"]
     if h == "amir":
-        return pen.path("M-66,-262 Q-72,-342 0,-340 Q72,-342 66,-262 Q60,-300 32,-302 L20,-288 L6,-304 L-8,-288 "
-                        "L-24,-304 L-40,-290 Q-60,-294 -66,-262 Z", fill="#4e342e")
+        out = pen.path("M-66,-262 Q-72,-342 0,-340 Q72,-342 66,-262 Q60,-300 32,-302 L20,-288 L6,-304 L-8,-288 "
+                       "L-24,-304 L-40,-290 Q-60,-294 -66,-262 Z", fill="#4e342e")
+        return out + pen.path("M-40,-328 Q-20,-318 -10,-306 M10,-334 Q30,-326 40,-306 M-58,-300 Q-50,-292 -48,-280",
+                              fill="none", w=1.6)
     if h == "ravi":
         out = ""
         for x in (-40, -14, 12, 38):
@@ -163,6 +214,9 @@ def hair_front(pen, look):
         out = pen.path("M-64,-270 Q-66,-338 0,-338 Q66,-338 64,-270 L44,-296 L-44,-296 Z" if h == "mei" else
                        "M-66,-258 Q-70,-342 0,-340 Q70,-342 66,-258 Q60,-300 0,-306 Q-60,-300 -66,-258 Z",
                        fill="#212121")
+        if h == "mei":
+            out += pen.path("M-26,-336 L-22,-298 M0,-338 L0,-298 M26,-336 L22,-298", fill="none", w=1.6)
+            out += pen.path("M-56,-338 Q-44,-348 -40,-334 M56,-338 Q44,-348 40,-334", fill="none", w=1.6)
         if h == "lina":
             out += pen.line(0, -338, 0, -308, sw=DW)
         if h == "lina":
@@ -173,8 +227,10 @@ def hair_front(pen, look):
                 out += pen.circle(26 + 9 * k, -356 + 4 * k, 7, fill="#fdd835", sw=1.6)
         return out
     if h == "tudung":
-        return pen.path("M-62,-250 Q-64,-336 0,-338 Q64,-336 62,-250 Q54,-312 0,-314 Q-54,-312 -62,-250 Z",
-                        fill=look["tudung"])
+        out = pen.path("M-62,-250 Q-64,-336 0,-338 Q64,-336 62,-250 Q54,-312 0,-314 Q-54,-312 -62,-250 Z",
+                       fill=look["tudung"])
+        out += pen.path("M-70,-196 Q-50,-170 -30,-160 M70,-196 Q50,-170 30,-160", fill="none", w=1.6)
+        return out + pen.circle(0, -196, 6, fill="#fdd835", sw=1.6)
     return ""
 
 

@@ -39,7 +39,7 @@ There is also a full-color front cover (`00-kulit-hadapan`) in a bright cartoon 
 
 The back cover (`99-kulit-belakang`) follows the publisher's "Mari Membaca" back cover layout. It has a description of the book, four feature tiles, two children coloring together and the FSKXpert / UPSI publisher panel. **The ISBN and barcode are placeholders.** Replace them once the real ISBN is issued.
 
-The official UPSI and FSKXpert logos (`logo/`) are on the front cover (top-left badge) and the back cover (top tag and publisher panel) of all three series. `logos.py` embeds them.
+The official logos (`logo/`) appear on the covers of all three series. The front cover has only the FSKXpert logo (top-left tag). The back cover has the FSKXpert logo at the top and both the UPSI and FSKXpert logos in the publisher panel. `logos.py` embeds them.
 
 ## Files (`output/`)
 - `png/00-kulit-hadapan.png`: front cover, 2480 × 3508 px, 300 DPI

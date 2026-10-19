@@ -28,15 +28,7 @@ def logo(name, x, y, h):
             f'height="{h:.1f}" preserveAspectRatio="xMidYMid meet"/>')
 
 
-def badge(x=20, y=16):
-    """White rounded badge with both logos, for the front covers."""
-    pad, h_upsi, h_fsk = 14, 72, 54
-    w_upsi, w_fsk = width("upsi", h_upsi), width("fskxpert", h_fsk)
-    w = pad + w_upsi + 22 + w_fsk + pad
-    h = h_upsi + 2 * 12
-    sep = x + pad + w_upsi + 11
-    return (f'<rect x="{x}" y="{y}" width="{w:.1f}" height="{h}" rx="18" fill="#ffffff" stroke="#1a3a8f" '
-            f'stroke-width="2.5"/>'
-            + logo("upsi", x + pad, y + 12, h_upsi)
-            + f'<line x1="{sep:.1f}" y1="{y + 16}" x2="{sep:.1f}" y2="{y + h - 16}" stroke="#c5cae9" stroke-width="2"/>'
-            + logo("fskxpert", sep + 11, y + (h - h_fsk) / 2, h_fsk))
+def badge(x=20, y=16, h=60):
+    """White rounded tag with the FSKXpert logo, for the front covers."""
+    return (f'<rect x="{x}" y="{y}" width="{width("fskxpert", h) + 32:.1f}" height="{h + 24}" rx="18" '
+            f'fill="#ffffff" stroke="#1a3a8f" stroke-width="2.5"/>' + logo("fskxpert", x + 16, y + 12, h))
