@@ -37,10 +37,13 @@ Thirty coloring pages that follow the "Ambulans" template layout: a number badge
 
 There is also a full-color front cover (`00-kulit-hadapan`) in a bright cartoon style. It shows the title "Siri KENDERAAN, Buku Mewarna untuk Kanak-kanak", a bear holding a coloring book, a bird on a school bus and an open book with a colored and an uncolored vehicle.
 
+The back cover (`99-kulit-belakang`) follows the publisher's "Mari Membaca" back cover layout. It has a description of the book, four feature tiles, two children coloring together and the FSKXpert / UPSI publisher panel. **The ISBN and barcode are placeholders.** Replace them once the real ISBN is issued, and swap in the official logo files if needed, since the logos are recreated as text only.
+
 ## Files (`output/`)
 - `png/00-kulit-hadapan.png`: front cover, 2480 × 3508 px, 300 DPI
+- `png/99-kulit-belakang.png`: back cover, 2480 × 3508 px, 300 DPI
 - `png/01-ambulans.png` … `png/30-kapal-selam.png`: 2480 × 3508 px, 300 DPI (A4 portrait)
-- `siri-kenderaan-30-muka-A4-300dpi.pdf`: the cover plus all 30 pages in one print-ready A4 PDF (lossless)
+- `siri-kenderaan-30-muka-A4-300dpi.pdf`: front cover, all 30 pages and the back cover (32 pages) in one print-ready A4 PDF (lossless)
 - `svg/*.svg`: vector versions, for editing or printing at larger sizes
 
 ## Regenerating
@@ -50,5 +53,5 @@ python3 generate.py svg
 PLAYWRIGHT_MODULE=/path/to/node_modules/playwright node render.mjs
 python3 generate.py finish
 ```
-Set `PAGES=7,12` to rebuild only some pages. Page order, titles and scenes are listed in `PAGES` in `generate.py`. The vehicles are in `vehicles.py`, the backgrounds in `scenes.py`, the cover in `cover.py` and the shared drawing helpers in `draw.py`.
+Set `PAGES=7,12` to rebuild only some pages. Page order, titles and scenes are listed in `PAGES` in `generate.py`. The vehicles are in `vehicles.py`, the backgrounds in `scenes.py`, the covers in `cover.py` and `back_cover.py`, and the shared drawing helpers in `draw.py`.
 The font is Fredoka (SIL Open Font License, see `fonts/OFL.txt`).

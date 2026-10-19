@@ -15,6 +15,7 @@ import sys
 from PIL import Image, ImageFont
 
 import scenes as S
+from back_cover import back_cover_svg
 from cover import cover_svg
 import vehicles as V
 from draw import FRAME, GROUND, H, INK, W, Pen
@@ -23,7 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.join(HERE, "build")
 OUT = os.path.join(HERE, "output")
 FONT_BOLD = os.path.join(HERE, "fonts", "Fredoka-Bold.ttf")
-FONT_SEMI = os.path.join(HERE, "fonts", "Fredoka-SemiBold.ttf")
+
 PX_W, PX_H = 2480, 3508  # A4 @ 300 DPI
 REF = (556, 30, 326, 352)  # colored reference box
 REF_VIEW = (22, 400, 862)  # default crop of the scene shown in the reference box
@@ -153,6 +154,7 @@ def font_face(name, weight, path):
 
 
 COVER = "00-kulit-hadapan"
+BACK = "99-kulit-belakang"  # PAGES=99 builds just the back cover
 
 
 def wanted():
@@ -170,10 +172,13 @@ def build_svg():
         os.makedirs(d, exist_ok=True)
     for f in os.listdir(BUILD):
         os.remove(os.path.join(BUILD, f))
-    css = font_face("Fredoka", 700, FONT_BOLD) + font_face("Fredoka", 600, FONT_SEMI)
+    css = "".join(font_face("Fredoka", w, os.path.join(HERE, "fonts", f"Fredoka-{n}.ttf"))
+                  for w, n in ((400, "Regular"), (500, "Medium"), (600, "SemiBold"), (700, "Bold")))
     jobs = [(slug(i, page[0]), lambda i=i, page=page: page_svg(i, page)) for i, page in selected()]
     if wanted() is None or 0 in wanted():
         jobs.insert(0, (COVER, cover_svg))
+    if wanted() is None or 99 in wanted():
+        jobs.append((BACK, back_cover_svg))
     for name, make in jobs:
         svg = make()
         with open(os.path.join(OUT, "svg", f"{name}.svg"), "w") as fh:
@@ -191,13 +196,15 @@ def finish():
     names = [slug(i, page[0]) for i, page in selected()]
     if os.path.exists(os.path.join(BUILD, f"{COVER}.png")):
         names.insert(0, COVER)
+    if os.path.exists(os.path.join(BUILD, f"{BACK}.png")):
+        names.append(BACK)
     for name in names:
         im = Image.open(os.path.join(BUILD, f"{name}.png")).convert("RGB")
         assert im.size == (PX_W, PX_H), im.size
         dst = os.path.join(OUT, "png", f"{name}.png")
         im.save(dst, dpi=(300, 300), optimize=True)
         pngs.append(dst)
-    if len(pngs) == len(PAGES) + 1:
+    if len(pngs) == len(PAGES) + 2:
         import img2pdf
         a4 = img2pdf.get_layout_fun((img2pdf.mm_to_pt(210), img2pdf.mm_to_pt(297)))
         with open(os.path.join(OUT, "siri-kenderaan-30-muka-A4-300dpi.pdf"), "wb") as fh:
