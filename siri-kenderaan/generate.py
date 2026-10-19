@@ -15,6 +15,7 @@ import sys
 from PIL import Image, ImageFont
 
 import scenes as S
+from cover import cover_svg
 import vehicles as V
 from draw import FRAME, GROUND, H, INK, W, Pen
 
@@ -151,9 +152,16 @@ def font_face(name, weight, path):
             f"src:url(data:font/ttf;base64,{data}) format('truetype');}}")
 
 
-def selected():
+COVER = "00-kulit-hadapan"
+
+
+def wanted():
     only = os.environ.get("PAGES")
-    nums = {int(n) for n in only.split(",")} if only else None
+    return {int(n) for n in only.split(",")} if only else None
+
+
+def selected():
+    nums = wanted()
     return [(i, p) for i, p in enumerate(PAGES, 1) if nums is None or i in nums]
 
 
@@ -163,9 +171,11 @@ def build_svg():
     for f in os.listdir(BUILD):
         os.remove(os.path.join(BUILD, f))
     css = font_face("Fredoka", 700, FONT_BOLD) + font_face("Fredoka", 600, FONT_SEMI)
-    for i, page in selected():
-        svg = page_svg(i, page)
-        name = slug(i, page[0])
+    jobs = [(slug(i, page[0]), lambda i=i, page=page: page_svg(i, page)) for i, page in selected()]
+    if wanted() is None or 0 in wanted():
+        jobs.insert(0, (COVER, cover_svg))
+    for name, make in jobs:
+        svg = make()
         with open(os.path.join(OUT, "svg", f"{name}.svg"), "w") as fh:
             fh.write(svg.replace("<defs>", f"<defs><style>{css}</style>", 1))
         html = (f"<!doctype html><html><head><meta charset='utf-8'><style>{css}"
@@ -173,19 +183,21 @@ def build_svg():
                 f"<body>{svg}</body></html>")
         with open(os.path.join(BUILD, f"{name}.html"), "w") as fh:
             fh.write(html)
-    print(f"{len(selected())} pages")
+    print(f"{len(jobs)} pages")
 
 
 def finish():
     pngs = []
-    for i, page in selected():
-        name = slug(i, page[0])
+    names = [slug(i, page[0]) for i, page in selected()]
+    if os.path.exists(os.path.join(BUILD, f"{COVER}.png")):
+        names.insert(0, COVER)
+    for name in names:
         im = Image.open(os.path.join(BUILD, f"{name}.png")).convert("RGB")
         assert im.size == (PX_W, PX_H), im.size
         dst = os.path.join(OUT, "png", f"{name}.png")
         im.save(dst, dpi=(300, 300), optimize=True)
         pngs.append(dst)
-    if len(pngs) == len(PAGES):
+    if len(pngs) == len(PAGES) + 1:
         import img2pdf
         a4 = img2pdf.get_layout_fun((img2pdf.mm_to_pt(210), img2pdf.mm_to_pt(297)))
         with open(os.path.join(OUT, "siri-kenderaan-30-muka-A4-300dpi.pdf"), "wb") as fh:

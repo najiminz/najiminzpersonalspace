@@ -35,9 +35,12 @@ Thirty coloring pages that follow the "Ambulans" template layout: a number badge
 | 29 | Kapal | Laut |
 | 30 | Kapal Selam | Dasar laut |
 
+There is also a full-color front cover (`00-kulit-hadapan`) in a bright cartoon style. It shows the title "Siri KENDERAAN, Buku Mewarna untuk Kanak-kanak", a bear holding a coloring book, a bird on a school bus and an open book with a colored and an uncolored vehicle.
+
 ## Files (`output/`)
+- `png/00-kulit-hadapan.png`: front cover, 2480 × 3508 px, 300 DPI
 - `png/01-ambulans.png` … `png/30-kapal-selam.png`: 2480 × 3508 px, 300 DPI (A4 portrait)
-- `siri-kenderaan-30-muka-A4-300dpi.pdf`: all 30 pages in one print-ready A4 PDF (lossless)
+- `siri-kenderaan-30-muka-A4-300dpi.pdf`: the cover plus all 30 pages in one print-ready A4 PDF (lossless)
 - `svg/*.svg`: vector versions, for editing or printing at larger sizes
 
 ## Regenerating
@@ -47,5 +50,5 @@ python3 generate.py svg
 PLAYWRIGHT_MODULE=/path/to/node_modules/playwright node render.mjs
 python3 generate.py finish
 ```
-Set `PAGES=7,12` to rebuild only some pages. Page order, titles and scenes are listed in `PAGES` in `generate.py`. The vehicles are in `vehicles.py`, the backgrounds in `scenes.py` and the shared drawing helpers in `draw.py`.
+Set `PAGES=7,12` to rebuild only some pages. Page order, titles and scenes are listed in `PAGES` in `generate.py`. The vehicles are in `vehicles.py`, the backgrounds in `scenes.py`, the cover in `cover.py` and the shared drawing helpers in `draw.py`.
 The font is Fredoka (SIL Open Font License, see `fonts/OFL.txt`).
