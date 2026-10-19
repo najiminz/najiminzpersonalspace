@@ -11,7 +11,7 @@ import objek as O
 from characters import kid, kid_hands
 from draw import INK, Pen, star_d
 
-PAGES = 46
+PAGES = 30
 
 
 def block(pen, x, y, label, color, size=74):
@@ -109,7 +109,7 @@ BLURB = ["Buku ini direka khas untuk membantu",
 TILES = [("#f8bbd0", BC.icon_crayon, ["Melatih", "kemahiran", "motor halus"]),
          ("#bbdefb", icon_abc, ["Mengenal", "huruf", "A hingga Z"]),
          ("#fff59d", icon_123, ["Belajar", "mengira", "1 hingga 10"]),
-         ("#c5e1a5", icon_shapes, ["Mengenal", "10 bentuk", "asas"])]
+         ("#c5e1a5", icon_shapes, ["Mengenal", "7 bentuk", "asas"])]
 
 
 def book_art(pen):

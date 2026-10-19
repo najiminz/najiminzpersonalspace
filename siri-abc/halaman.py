@@ -46,32 +46,40 @@ def page(title, subject, bg, ref=(22, 330, 900)):
 
 # ---------------------------------------------------------------- huruf
 
+# (letter, word, drawing, centre of the drawing in its own coordinates + size tweak)
 WORDS = [
     ("A", "Ayam", O.ayam, {}), ("B", "Bola", O.bola, {}), ("C", "Cawan", O.cawan, {}),
     ("D", "Durian", O.durian, {}), ("E", "Epal", O.epal, {}), ("F", "Feri", O.feri, {}),
     ("G", "Gajah", O.gajah, {}), ("H", "Harimau", O.harimau, {}), ("I", "Ikan", O.ikan, {}),
     ("J", "Jam", O.jam, {}), ("K", "Kucing", O.kucing, {}), ("L", "Lebah", O.lebah, {}),
     ("M", "Matahari", O.matahari, {}), ("N", "Nanas", O.nanas, {}), ("O", "Oren", O.oren, {}),
-    ("P", "Payung", O.payung, dict(cx=500, cy=950, s=1.1)), ("Q", "Quran", O.quran, dict(cy=900)),
+    ("P", "Payung", O.payung, dict(dx=20, dy=-80, s=0.78)), ("Q", "Quran", O.quran, {}),
     ("R", "Rama-rama", O.rama_rama, {}), ("S", "Siput", O.siput, {}), ("T", "Tembikai", O.tembikai, {}),
-    ("U", "Ular", O.ular, {}), ("V", "Van", O.van, dict(cy=820, s=1.55)), ("W", "Wau", O.wau, dict(cy=880)),
-    ("X", "Xilofon", O.xilofon, {}), ("Y", "Yo-yo", O.yoyo, dict(cx=480, cy=930, s=1.15)),
-    ("Z", "Zirafah", O.zirafah, dict(cy=920, s=1.25)),
+    ("U", "Ular", O.ular, {}), ("V", "Van", O.van, dict(dy=40, s=1.15)), ("W", "Wau", O.wau, dict(dy=-43)),
+    ("X", "Xilofon", O.xilofon, {}), ("Y", "Yo-yo", O.yoyo, dict(dx=20, dy=45, s=0.9)),
+    ("Z", "Zirafah", O.zirafah, dict(dx=-40, dy=-50, s=0.95)),
 ]
+# Two letters share a page: (baseline of "Aa", baseline of the word, centre of the drawing)
+HALVES = [(420, 570, (640, 580)), (1000, 1150, (640, 1010))]
 
 
-def huruf(i, letter, word, fn, cx=452, cy=870, s=1.45):
-    color = PALETTE[i % len(PALETTE)]
+def huruf(i, first, second):
+    def half(pen, k, letter, word, fn, tweak):
+        base, word_base, (cx, cy) = HALVES[k]
+        pair = letter + letter.lower()
+        size = min(230, 230 * 360 / text_width(pair, 230))
+        out = hollow(pen, 60, base, pair, size, PALETTE[(2 * i + k) % len(PALETTE)], w=5)
+        wsize = min(80, 80 * 380 / text_width(word, 80))
+        out += hollow(pen, 64, word_base, word, wsize, PALETTE[(2 * i + k + 3) % len(PALETTE)])
+        s = 0.92 * tweak.get("s", 1.0)
+        return out + O.place(pen, fn, cx - tweak.get("dx", 0) * s, cy - tweak.get("dy", 0) * s, s)
 
     def subject(pen):
-        pair = letter + letter.lower()
-        size = min(330, 330 * 470 / text_width(pair, 330))
-        out = hollow(pen, 70, 548, pair, size, color, w=5)
-        out += O.place(pen, fn, cx, cy, s)
-        wsize = min(92, 92 * 640 / text_width(word, 92))
-        out += hollow(pen, W / 2, 1228, word, wsize, PALETTE[(i + 3) % len(PALETTE)], anchor="middle")
-        return out
-    return page(f"{letter} untuk {word}", subject, backdrop("#fff8e1"))
+        out = half(pen, 0, *first)
+        out += (f'<line x1="50" y1="748" x2="855" y2="748" stroke="{INK}" stroke-width="{pen.sw(2.4)}" '
+                f'stroke-dasharray="{pen.sw(12)} {pen.sw(10)}" stroke-linecap="round"/>')
+        return out + half(pen, 1, *second)
+    return page(f"Huruf {first[0]} dan {second[0]}", subject, backdrop("#fff8e1"), ref=(-100, 150, 1110))
 
 
 # ---------------------------------------------------------------- nombor
@@ -130,14 +138,10 @@ SHAPES = [
      0, O.telur, "#8e24aa"),
     ("Bintang", lambda r: star_d(0, 10 * r, 175 * r, 78 * r), 24, O.bintang_laut, "#fdd835"),
     ("Hati", lambda r: O.hati_d(1.15 * r), -10, O.belon_hati, "#ec407a"),
-    ("Rombus", lambda r: f"M0,{-175 * r} L{130 * r},0 L0,{175 * r} L{-130 * r},0 Z", 0, O.layang, "#00acc1"),
-    ("Separa Bulatan", lambda r: f"M{-175 * r},{70 * r} A{175 * r},{175 * r} 0 0 1 {175 * r},{70 * r} Z", 0, O.pelangi,
-     "#ff7043"),
-    ("Heksagon", lambda r: O.hex_d(0, 0, 165 * r), 0, O.sarang_lebah, "#ffb300"),
 ]
 
 
-OBJECT_AT = {"Hati": (830, 1.1), "Rombus": (820, 1.0), "Heksagon": (870, 1.0)}
+OBJECT_AT = {"Hati": (830, 1.1)}
 
 
 def bentuk(i, name, shape_d, face_dy, fn, color):
@@ -156,6 +160,6 @@ def bentuk(i, name, shape_d, face_dy, fn, color):
     return page(name, subject, backdrop("#f3e5f5"))
 
 
-PAGES = ([huruf(i, *w[:3], **w[3]) for i, w in enumerate(WORDS)]
+PAGES = ([huruf(i, WORDS[2 * i], WORDS[2 * i + 1]) for i in range(len(WORDS) // 2)]
          + [nombor(*n) for n in NUMBERS]
          + [bentuk(i, *s) for i, s in enumerate(SHAPES)])
