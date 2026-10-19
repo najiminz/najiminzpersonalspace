@@ -63,32 +63,123 @@ def small_tree(pen, x, base, h, seed):
     return out + pen.path(blob_d(x, base - h * 0.68, h * 0.34, h * 0.32, 9, seed), fill="#66bb6a", w=DW + 0.4)
 
 
-def outdoor(pen, horizon=HZ, hills=True, sunny=False, n_tufts=10, ground="#c5e1a5", clouds=True, scenery=True):
+def small_house(pen, x, base, w=120):
+    """Distant kampung house on stilts."""
+    h = w * 0.55
+    out = ""
+    for k in range(5):
+        px = x - w * 0.42 + k * w * 0.21
+        out += pen.line(px, base, px, base - h * 0.35, sw=DW)
+    out += pen.rect(x - w * 0.45, base - h * 0.35 - h * 0.6, w * 0.9, h * 0.6, fill="#d7a86e", sw=DW)
+    for k in range(1, 8):
+        px = x - w * 0.45 + k * w * 0.9 / 8
+        out += pen.line(px, base - h * 0.95, px, base - h * 0.35, sw=1.2)
+    out += pen.rect(x - w * 0.3, base - h * 0.82, w * 0.18, h * 0.3, fill=GLASS, sw=1.8)
+    out += pen.rect(x + w * 0.1, base - h * 0.82, w * 0.18, h * 0.3, fill=GLASS, sw=1.8)
+    out += pen.path(f"M{x - w * 0.6},{base - h * 0.92} L{x - w * 0.25},{base - h * 1.5} L{x + w * 0.25},{base - h * 1.5} "
+                    f"L{x + w * 0.6},{base - h * 0.92} Z", fill="#8d4f2a", w=DW)
+    return out + pen.path(f"M{x - w * 0.25},{base - h * 1.5} L{x},{base - h * 1.75} L{x + w * 0.25},{base - h * 1.5}",
+                          fill="#a1887f", w=DW)
+
+
+def fence(pen, x0, x1, base, h=46):
+    out = pen.rect(x0, base - h * 0.75, x1 - x0, 8, fill="#d7a86e", sw=1.8)
+    out += pen.rect(x0, base - h * 0.35, x1 - x0, 8, fill="#d7a86e", sw=1.8)
+    for x in range(int(x0) + 6, int(x1), 34):
+        out += pen.path(f"M{x},{base} L{x},{base - h} L{x + 7},{base - h - 9} L{x + 14},{base - h} L{x + 14},{base} Z",
+                        fill="#e8b47a", w=1.8)
+    return out
+
+
+def pebbles(pen, cx, cy, seed):
+    rnd = random.Random(seed)
+    out = ""
+    for _ in range(4):
+        out += pen.ellipse(round(cx + rnd.uniform(-34, 34)), round(cy + rnd.uniform(-8, 8)), rnd.choice((10, 13, 16)),
+                           rnd.choice((6, 8)), fill="#bdbdbd", sw=1.8)
+    return out
+
+
+def outdoor(pen, horizon=HZ, hills=True, sunny=True, n_tufts=18, ground="#c5e1a5", clouds=True, scenery=True):
     out = fill_rect(pen, 0, 0, W, horizon, "#bfe7fb")
     out += fill_rect(pen, 0, horizon, W, 400, ground)
     if clouds:
         out += cloud(pen, 46, 196, 210, 84) + cloud(pen, 280, 286, 130, 52)
-        out += bird(pen, 420, 230) + bird(pen, 456, 256, 0.8)
-    if sunny:
-        out += sun(pen, 470, 230, 40)
+        out += bird(pen, 420, 330) + bird(pen, 456, 356, 0.8)
+        if sunny:
+            out += sun(pen, 470, 210, 34)
     if hills:
         out += pen.path(f"M18,{horizon} Q120,{horizon - 150} 260,{horizon - 70} Q420,{horizon - 170} 600,{horizon - 80} "
                         f"Q760,{horizon - 150} 887,{horizon - 60} L887,{horizon} Z", fill="#c5e1a5")
+        if scenery:
+            out += small_house(pen, 330, horizon - 92, 104) + small_house(pen, 690, horizon - 86, 96)
         out += pen.path(f"M18,{horizon} Q170,{horizon - 90} 330,{horizon - 20} Q520,{horizon - 110} 700,{horizon - 30} "
                         f"Q800,{horizon - 70} 887,{horizon - 20} L887,{horizon} Z", fill="#aed581")
     if scenery:
-        for i, (x, h) in enumerate(((70, 120), (150, 90), (760, 100), (845, 130))):
+        out += fence(pen, 18, 887, horizon)
+        for i, (x, h) in enumerate(((150, 90), (760, 100))):
             out += small_tree(pen, x, horizon, h, 50 + i)
+        out += palm(pen, 50, horizon, 380, lean=26, seed=3) + palm(pen, 862, horizon, 330, lean=-22, seed=4)
+        out += bush(pen, 230, horizon + 6, 120, 50, 11, fill="#66bb6a") + bush(pen, 610, horizon + 6, 110, 46, 12,
+                                                                              fill="#66bb6a")
     out += pen.line(18, horizon, 887, horizon, sw=LW)
     out += tufts(pen, n_tufts, horizon, horizon + 40)
     if scenery:
         for x, y, c in ((60, horizon + 120, "#f06292"), (845, horizon + 150, "#ffb300"), (110, horizon + 250, "#ba68c8"),
-                        (800, horizon + 270, "#f06292")):
-            out += pen.line(x, y + 8, x, y + 30, sw=DW) + small_flower(pen, x, y, 12, c)
+                        (800, horizon + 270, "#f06292"), (300, horizon + 300, "#ffb300"), (620, horizon + 290, "#ba68c8"),
+                        (40, horizon + 200, "#ffb300"), (870, horizon + 230, "#ba68c8")):
+            if y < 1262:
+                out += pen.line(x, y + 8, x, y + 30, sw=DW) + small_flower(pen, x, y, 12, c)
+                out += pen.path(f"M{x},{y + 24} Q{x + 14},{y + 14} {x + 18},{y + 20} Q{x + 10},{y + 28} {x},{y + 24} Z",
+                                fill="#66bb6a", w=1.4)
+        out += pebbles(pen, 200, horizon + 200, 1) + pebbles(pen, 700, horizon + 220, 2)
     return out
 
 
-def wall_picture(pen, x=640, y=470, w=170, h=120):
+def lamp(pen, x=400, top=150):
+    out = pen.line(x, top, x, top + 110, sw=DW)
+    out += pen.path(f"M{x - 60},{top + 170} Q{x - 54},{top + 110} {x},{top + 106} Q{x + 54},{top + 110} {x + 60},{top + 170} Z",
+                    fill="#ffb74d")
+    out += pen.path(f"M{x - 60},{top + 170} " + "".join(f"q7.5,10 15,0 " for _ in range(8)), fill="none", w=1.6)
+    out += pen.path(f"M{x - 30},{top + 150} Q{x},{top + 132} {x + 30},{top + 150}", fill="none", w=1.6)
+    return out + pen.circle(x, top + 180, 14, fill="#fff59d", sw=DW)
+
+
+def shelf(pen, x0=610, x1=860, y=690):
+    out = pen.rect(x0, y, x1 - x0, 14, fill="#a1887f", rx=3)
+    for x in (x0 + 20, x1 - 30):
+        out += pen.path(f"M{x},{y + 14} L{x},{y + 40} L{x + 14},{y + 14}", fill="#a1887f", w=DW)
+    colors = ["#e53935", "#1e88e5", "#43a047", "#fdd835"]
+    for k, c in enumerate(colors):
+        out += pen.rect(x0 + 16 + k * 22, y - 70 + (k % 2) * 8, 20, 70 - (k % 2) * 8, fill=c, rx=2, sw=1.8)
+    vx = x0 + 150
+    out += pen.path(f"M{vx - 18},{y} Q{vx - 30},{y - 40} {vx - 10},{y - 60} L{vx + 10},{y - 60} Q{vx + 30},{y - 40} {vx + 18},{y} Z",
+                    fill="#4fc3f7", w=1.8)
+    for dx, dy, c in ((-18, -96, "#f06292"), (14, -104, "#ffb300"), (0, -120, "#e53935")):
+        out += pen.line(vx, y - 60, vx + dx, y + dy + 10, sw=1.6) + small_flower(pen, vx + dx, y + dy, 11, c)
+    out += pen.rect(x1 - 52, y - 40, 34, 40, fill="#ffcc80", rx=4, sw=1.8)
+    return out + pen.ellipse(x1 - 35, y - 40, 17, 5, fill="#ffcc80", sw=1.6)
+
+
+def tikar(pen, floor):
+    mat = f"M150,{floor + 40} L755,{floor + 40} L830,{floor + 250} L75,{floor + 250} Z"
+    out = pen.path(mat, fill="#e6c27a")
+    inner = "".join(pen.line(x, floor, x + 300, floor + 300, sw=1.2) + pen.line(x + 300, floor, x, floor + 300, sw=1.2)
+                    for x in range(-200, 1000, 32))
+    out += pen.clipped(mat, inner)
+    out += pen.path(f"M170,{floor + 56} L738,{floor + 56} L806,{floor + 236} L100,{floor + 236} Z", fill="none", w=DW)
+    return out + pen.path(mat, fill="none")
+
+
+def batik_band(pen, y=158):
+    out = pen.rect(-10, y, 925, 40, fill="#ffcc80", sw=DW)
+    for x in range(10, 900, 60):
+        out += small_flower(pen, x + 30, y + 20, 11, "#e57373")
+        out += pen.path(f"M{x},{y + 20} q8,-12 16,0 q8,12 16,0", fill="none", w=1.4)
+    return out
+
+
+def wall_picture(pen, x=640, y=440, w=170, h=110):
     out = pen.rect(x - 10, y - 10, w + 20, h + 20, fill="#8d6e63", rx=6)
     out += pen.rect(x, y, w, h, fill="#bfe7fb", sw=DW)
     out += pen.path(f"M{x},{y + h * 0.75} Q{x + w * 0.3},{y + h * 0.45} {x + w * 0.55},{y + h * 0.7} "
@@ -109,7 +200,7 @@ def potted_plant(pen, x, base):
                           fill="#d7764a")
 
 
-def indoor(pen, floor=HZ, window=True, picture=True, plant=True):
+def indoor(pen, floor=HZ, window=True, picture=True, plant=True, with_lamp=True, rug=True, with_shelf=None):
     out = fill_rect(pen, 0, 0, W, floor, "#fff3e0")
     out += fill_rect(pen, 0, floor, W, 400, "#e0b07a")
     out += pen.rect(-10, floor - 150, 925, 150, fill="#ffe0b2", sw=DW)
@@ -124,11 +215,25 @@ def indoor(pen, floor=HZ, window=True, picture=True, plant=True):
     if window:
         out += pen.rect(70, 300, 190, 230, fill=GLASS, rx=8)
         out += pen.line(165, 300, 165, 530, sw=DW + 0.6) + pen.line(70, 415, 260, 415, sw=DW + 0.6)
-        out += pen.path("M60,290 Q100,420 70,540 L50,540 L50,290 Z", fill="#ef9a9a")
-        out += pen.path("M270,290 Q230,420 260,540 L280,540 L280,290 Z", fill="#ef9a9a")
+        out += pen.path("M72,410 Q120,360 165,390 Q210,350 258,404 L258,413 L72,413 Z", fill="#aed581", w=1.8)
+        out += pen.path("M215,413 L222,330 M222,330 Q190,322 180,340 M222,330 Q250,316 258,336 M222,330 Q214,306 232,300",
+                        fill="none", w=1.8)
+        out += cloud(pen, 82, 316, 70, 28)
+        for side, d in ((-1, "M60,290 Q100,420 70,540 L50,540 L50,290 Z"), (1, "M270,290 Q230,420 260,540 L280,540 L280,290 Z")):
+            out += pen.path(d, fill="#ef9a9a")
+            cx = 66 if side < 0 else 264
+            out += pen.clipped(d, "".join(pen.circle(cx + (k % 2) * 10 - 5, 310 + k * 34, 5, fill="#ffffff", sw=1.2)
+                                          for k in range(7)))
         out += pen.rect(44, 280, 242, 14, fill="#8d6e63", rx=5)
+    out += batik_band(pen)
+    if with_lamp:
+        out += lamp(pen)
     if picture:
         out += wall_picture(pen)
+    if picture if with_shelf is None else with_shelf:
+        out += shelf(pen)
+    if rug:
+        out += tikar(pen, floor)
     if plant:
         out += potted_plant(pen, 845, floor + 40)
     return out
@@ -150,7 +255,7 @@ def night(pen, horizon=HZ):
 
 
 def table(pen, top=1000):
-    out = indoor(pen, floor=top, window=True, plant=False)
+    out = indoor(pen, floor=top, window=True, plant=False, rug=False)
     out += pen.rect(-10, top, 925, 290, fill="#c8915a")
     out += pen.rect(-10, top, 925, 30, fill="#ffffff", sw=DW)
     for i, x in enumerate(range(-10, 915, 30)):
@@ -169,7 +274,13 @@ def sea(pen, horizon=900):
     out += pen.path(f"M700,{horizon} Q760,{horizon - 50} 880,{horizon - 30} L887,{horizon} Z", fill="#ffe082")
     out += palm(pen, 800, horizon - 34, 150, lean=-20)
     out += pen.line(18, horizon, 887, horizon, sw=LW)
-    out += bird(pen, 470, 260) + bird(pen, 510, 290, 0.8)
+    out += bird(pen, 470, 330) + bird(pen, 510, 356, 0.8) + bird(pen, 380, 300, 0.9)
+    out += sun(pen, 470, 210, 34)
+    bx = 300
+    out += pen.path(f"M{bx - 50},{horizon - 4} L{bx + 50},{horizon - 4} L{bx + 36},{horizon + 12} L{bx - 36},{horizon + 12} Z",
+                    fill="#8d6e63", w=1.8)
+    out += pen.line(bx, horizon - 4, bx, horizon - 70, sw=1.8)
+    out += pen.path(f"M{bx + 2},{horizon - 66} L{bx + 40},{horizon - 10} L{bx + 2},{horizon - 10} Z", fill="#ffffff", w=1.8)
     for y, off in ((940, 0), (980, 70)):
         for x in range(40 + off, 880, 150):
             out += pen.path(f"M{x},{y} q18,-14 36,0 q18,14 36,0", fill="none", w=DW)
@@ -223,6 +334,16 @@ def s_gasing(pen):
     g += pen.ellipse(0, -236, 36, 12, fill="#a1887f", sw=DW + 0.6)
     for x in (-120, -60, 0, 60, 120):
         g += pen.circle(x, -126 + abs(x) * 0.12, 8, fill="#fdd835", sw=DW - 0.4)
+    body = "M-30,-40 C-210,-60 -210,-160 -70,-176 L70,-176 C210,-160 210,-60 30,-40 Z"
+    band = ""
+    for x in range(-180, 180, 30):
+        yb = -92 + abs(x) * 0.06
+        band += pen.path(f"M{x},{yb + 6} L{x + 15},{yb - 12} L{x + 30},{yb + 6} Z", fill="#1e88e5", w=1.6)
+    for x in range(-130, 140, 26):
+        band += pen.path(f"M{x - 8},-160 Q{x},-172 {x + 8},-160", fill="none", w=1.6)
+    g += pen.clipped(body, band)
+    for k in range(-2, 3):
+        g += pen.line(k * 12, -228, k * 12, -180, sw=1.4)
     out = f'<g transform="translate(470,1110) scale(1.15)">{g}</g>'
     for r, a0, a1 in ((270, 200, 250), (290, -70, -20), (250, 290, 330)):
         x0, y0 = 470 + r * math.cos(math.radians(a0)), 990 + r * 0.38 * math.sin(math.radians(a0))
@@ -250,6 +371,17 @@ def s_congkak(pen):
             out += pen.ellipse(x, y, 27, 19, fill="#8d6e63", sw=DW + 0.6)
             for _ in range(rnd.randint(1, 3)):
                 out += pen.circle(x + rnd.uniform(-10, 10), y + rnd.uniform(-5, 6), 6, fill="#fff8e1", sw=1.6)
+    rim = "M110,1000 Q110,1072 200,1080 L706,1080 Q796,1072 796,1000 L796,1040 L110,1040 Z"
+    carve = ""
+    for x in range(150, 770, 48):
+        carve += pen.path(f"M{x},1062 q12,-14 24,0 q12,14 24,0", fill="none", w=1.6)
+        carve += pen.circle(x + 24, 1062, 4, fill="#fdd835", sw=1.2)
+    out += carve
+    for cx in (166, 740):
+        for k in range(8):
+            a = math.radians(k * 45)
+            out += pen.ellipse(round(cx + 46 * math.cos(a)), round(968 + 60 * math.sin(a)), 8, 5, fill="#a5d6a7", sw=1.2,
+                               rot=round(k * 45))
     for x, y in ((156, 954), (176, 976), (160, 990), (730, 950), (750, 975)):
         out += pen.circle(x, y, 7, fill="#fff8e1", sw=1.6)
     out += kid_hands(pen, "aisyah", 300, 1000, 1.15, la=(-50, -150), ra=(60, -116), sit=True)
@@ -263,19 +395,31 @@ def rattan_ball(pen, cx, cy, r):
         a = 2 * math.pi * k / 6
         inner += pen.circle(cx + r * 0.62 * math.cos(a), cy + r * 0.62 * math.sin(a), r * 0.24, fill="#ffffff", sw=DW)
     inner += pen.circle(cx, cy, r * 0.24, fill="#ffffff", sw=DW)
+    for k in range(6):
+        a = 2 * math.pi * k / 6 + math.pi / 6
+        inner += pen.line(cx + r * 0.3 * math.cos(a), cy + r * 0.3 * math.sin(a), cx + r * math.cos(a), cy + r * math.sin(a),
+                          sw=1.6)
     return pen.circle(cx, cy, r, fill="#ffca28") + pen.clipped(
         f"M{cx - r},{cy} A{r},{r} 0 1 0 {cx + r},{cy} A{r},{r} 0 1 0 {cx - r},{cy} Z", inner) + pen.circle(
         cx, cy, r, fill="none")
 
 
 def s_sepak_takraw(pen):
-    out = pen.tube("M360,1150 L360,880 M545,1150 L545,880", 12, "#9e9e9e")
+    court = "M90,1060 L815,1060 L870,1240 L35,1240 Z"
+    out = pen.path(court, fill="#ffcc80")
+    out += pen.path("M452,1060 L452,1240 M110,1120 L795,1120", fill="none", w=DW)
+    out += pen.ellipse(452, 1180, 80, 30, fill="none", sw=DW)
+    for x, c in ((360, "#e53935"), (545, "#1e88e5")):
+        out += pen.path(f"M{x},880 L{x + (40 if x > 400 else -40)},894 L{x},908 Z", fill=c, w=1.8)
+    out += pen.tube("M360,1150 L360,880 M545,1150 L545,880", 12, "#9e9e9e")
     net = "M360,900 L545,900 L545,990 L360,990 Z"
     out += pen.path(net, fill="none", w=DW)
     out += pen.clipped(net, "".join(pen.line(x, 890, x - 40, 1000, sw=1.6) + pen.line(x - 40, 890, x, 1000, sw=1.6)
                                     for x in range(360, 600, 22)))
     out += pen.rect(354, 892, 198, 14, fill="#ffffff", rx=4, sw=DW)
-    out += rattan_ball(pen, 452, 600, 72)
+    out += rattan_ball(pen, 452, 600, 84)
+    for x0 in (90, 680):
+        out += pen.rect(x0, 1250, 120, 4, fill="#ffffff", sw=0.1)
     for d in ("M360,560 Q330,600 360,640", "M330,540 Q290,600 330,660", "M544,560 Q574,600 544,640"):
         out += pen.path(d, fill="none", w=DW)
     out += kid(pen, "amir", 180, GY, 1.05, la=(-86, -300), ra=(86, -300))
@@ -669,6 +813,8 @@ def s_perahu(pen):
     out += pen.path("M446,480 Q620,560 700,820 L446,820 Z", fill="#ffffff")
     out += pen.path("M446,560 Q560,620 610,720", fill="none", w=DW)
     out += pen.path("M434,500 Q300,600 250,820 L434,820 Z", fill="#ffe082")
+    for d in ("M446,480 Q620,560 700,820 L446,820 Z", "M434,500 Q300,600 250,820 L434,820 Z"):
+        out += pen.clipped(d, "".join(pen.line(200, y, 720, y, sw=1.6) for y in range(560, 820, 52)))
     hull = "M90,760 Q120,860 200,900 L700,900 Q800,860 830,740 Q760,820 650,830 L250,830 Q150,830 90,760 Z"
     out += pen.path(hull, fill="#1e88e5")
     deco = ""
@@ -686,6 +832,17 @@ def s_perahu(pen):
     for y, off in ((1020, 0), (1100, 70), (1180, 30)):
         for x in range(60 + off, 860, 160):
             out += pen.path(f"M{x},{y} q18,-14 36,0 q18,14 36,0", fill="none", w=DW)
+    for fx, fy, c, flip in ((170, 1150, "#ff7043", 1), (700, 1190, "#fdd835", -1), (440, 1225, "#ab47bc", 1)):
+        body = (f"M{fx - 64 * flip},{fy} Q{fx},{fy - 42} {fx + 42 * flip},{fy} Q{fx},{fy + 42} {fx - 64 * flip},{fy} Z "
+                f"M{fx + 38 * flip},{fy} L{fx + 76 * flip},{fy - 26} L{fx + 76 * flip},{fy + 26} Z")
+        out += pen.path(body, fill=c, w=DW)
+        out += pen.path(f"M{fx - 20 * flip},{fy - 28} Q{fx - 10 * flip},{fy} {fx - 20 * flip},{fy + 28}", fill="none", w=1.6)
+        for k in range(3):
+            out += pen.path(f"M{fx + (k * 14 - 6) * flip},{fy - 12} Q{fx + (k * 14 + 2) * flip},{fy} {fx + (k * 14 - 6) * flip},"
+                            f"{fy + 12}", fill="none", w=1.4)
+        out += pen.circle(fx - 40 * flip, fy - 8, 5, fill=INK, sw=1)
+    for x, y, r in ((200, 1130, 6), (210, 1105, 4), (760, 1160, 6), (770, 1138, 4)):
+        out += pen.circle(x, y, r, fill="#e1f5fe", sw=1.4)
     return out, W
 
 
@@ -874,8 +1031,12 @@ def s_hari_kebangsaan(pen):
 # ---------------------------------------------------------------- 24-29 makanan
 
 def plate(pen, cx, cy, rx, ry):
-    return pen.ellipse(cx, cy, rx, ry, fill="#ffffff") + pen.ellipse(cx, cy, rx * 0.8, ry * 0.78, fill="#ffffff",
-                                                                     sw=DW)
+    out = pen.ellipse(cx, cy, rx, ry, fill="#ffffff")
+    n = max(10, int(rx / 18))
+    for k in range(n):
+        a = 2 * math.pi * k / n
+        out += pen.circle(cx + rx * 0.9 * math.cos(a), cy + ry * 0.89 * math.sin(a), max(4, rx / 45), fill="#64b5f6", sw=1.2)
+    return out + pen.ellipse(cx, cy, rx * 0.8, ry * 0.78, fill="#ffffff", sw=DW)
 
 
 def s_nasi_lemak(pen):
@@ -1086,14 +1247,14 @@ PAGES = [
     page("Congkak", s_congkak, indoor, ref=(40, 520, 760)),
     page("Sepak Takraw", s_sepak_takraw, outdoor),
     page("Batu Seremban", s_batu_seremban, indoor, ref=(60, 500, 760)),
-    page("Seni Silat", s_silat, lambda p: outdoor(p, n_tufts=6), ref=(22, 400, 880)),
+    page("Seni Silat", s_silat, outdoor, ref=(22, 400, 880)),
     page("Kompang", s_kompang, lambda p: outdoor(p, clouds=False), ref=(22, 400, 880)),
     page("Wayang Kulit", s_wayang_kulit, night, ref=(60, 380, 800)),
     page("Batik", s_batik, lambda p: indoor(p, picture=False), ref=(40, 470, 820)),
     page("Songket", s_songket, lambda p: indoor(p, picture=False), ref=(40, 450, 820)),
     page("Labu Sayong", s_labu_sayong, lambda p: table(p, top=1040), ref=(60, 500, 760)),
     page("Keris", s_keris, indoor, ref=(60, 560, 760)),
-    page("Sape", s_sape, indoor, ref=(40, 300, 900)),
+    page("Sape", s_sape, lambda p: indoor(p, with_lamp=False), ref=(40, 300, 900)),
     page("Baju Melayu", s_baju_melayu, lambda p: outdoor(p, hills=False, n_tufts=4, clouds=False), ref=(60, 380, 820)),
     page("Baju Kurung", s_baju_kurung, lambda p: outdoor(p, hills=False, n_tufts=4, clouds=False), ref=(60, 380, 820)),
     page("Rumah Melayu", s_rumah_melayu, lambda p: outdoor(p, horizon=1010, hills=False), ref=(22, 360, 880)),
@@ -1101,13 +1262,13 @@ PAGES = [
     page("Perahu Kolek", s_perahu, sea, ref=(40, 420, 840)),
     page("Hari Raya Aidilfitri", s_hari_raya, lambda p: outdoor(p, hills=False, n_tufts=6, clouds=False),
          ref=(22, 380, 880)),
-    page("Tahun Baru Cina", s_tahun_baru_cina, lambda p: indoor(p, window=False), ref=(40, 360, 860)),
-    page("Deepavali", s_deepavali, lambda p: indoor(p, window=False), ref=(22, 420, 880)),
+    page("Tahun Baru Cina", s_tahun_baru_cina, lambda p: indoor(p, window=False, with_lamp=False), ref=(40, 360, 860)),
+    page("Deepavali", s_deepavali, lambda p: indoor(p, window=False, with_lamp=False, rug=False), ref=(22, 420, 880)),
     page("Pesta Kaamatan", s_kaamatan, lambda p: outdoor(p, clouds=False), ref=(22, 400, 880)),
     page("Hari Kebangsaan", s_hari_kebangsaan, lambda p: outdoor(p, hills=False), ref=(22, 360, 900)),
     page("Nasi Lemak", s_nasi_lemak, lambda p: table(p, top=860), ref=(60, 560, 760)),
     page("Sate", s_sate, lambda p: outdoor(p, hills=False), ref=(40, 520, 780)),
-    page("Teh Tarik", s_teh_tarik, lambda p: indoor(p, picture=False), ref=(22, 380, 880)),
+    page("Teh Tarik", s_teh_tarik, lambda p: indoor(p, picture=False, with_lamp=False, with_shelf=True), ref=(22, 380, 880)),
     page("Kuih-muih", s_kuih_muih, lambda p: table(p, top=860), ref=(60, 560, 760)),
     page("Lemang", s_lemang, outdoor, ref=(40, 560, 760)),
     page("Ketupat", s_ketupat, indoor, ref=(60, 520, 760)),
