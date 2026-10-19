@@ -144,7 +144,7 @@ def ribbon(label, y=150):
 
 
 def title():
-    return bubbly("KENDERAAN") + ribbon("SIRI")
+    return bubbly("KENDERAAN") + ribbon("SIRI 4")
 
 
 def sign():
