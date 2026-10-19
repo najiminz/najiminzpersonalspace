@@ -165,11 +165,11 @@ def sign():
     return out
 
 
-def badge():
+def badge(count="30"):
     out = p(star_d(812, 552, 82, 66, 18), "#fdd835", stroke=NAVY, w=4, extra='transform="rotate(10 812 552)"')
     out += f'<circle cx="812" cy="552" r="58" fill="#e8402f" stroke="#ffffff" stroke-width="4"/>'
     out += (f'<g transform="rotate(10 812 552)"><text x="812" y="562" text-anchor="middle" font-family="Fredoka" '
-            f'font-weight="700" font-size="56" fill="#fff">30</text>'
+            f'font-weight="700" font-size="56" fill="#fff">{count}</text>'
             f'<text x="812" y="590" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="20" '
             f'fill="#fff">GAMBAR</text></g>')
     return out

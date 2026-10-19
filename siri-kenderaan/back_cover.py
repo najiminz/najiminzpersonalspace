@@ -6,12 +6,16 @@ together, and a publisher panel with contact details and an ISBN barcode.
 The ISBN and barcode are placeholders until a real ISBN is assigned.
 """
 import math
+import os
+
+from PIL import ImageFont
 
 import vehicles as V
 from cover import NAVY, OUTLINE, butterfly, ell, flower, p, vehicle
 from draw import Pen, blob_d
 
 W, H = 905, 1280
+FONT_BOLD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts", "Fredoka-Bold.ttf")
 SKIN = "#ffd9b8"
 FONT = 'font-family="Fredoka"'
 
@@ -87,7 +91,9 @@ def sign(series="Siri Kenderaan"):
         out += p(d, "none", stroke="#b5733a", w=2.5)
     out += text(452, 155, 'Buku <tspan fill="#ffd54f">Mewarna</tspan>', 54, fill="#ffffff", weight=700,
                 extra=f'stroke="{OUTLINE}" stroke-width="8" stroke-linejoin="round" paint-order="stroke"')
-    out += f'<rect x="322" y="176" width="260" height="44" rx="22" fill="#ec407a" stroke="#ffffff" stroke-width="4"/>'
+    pill = max(260, ImageFont.truetype(FONT_BOLD, 26).getlength(series) + 48)
+    out += (f'<rect x="{452 - pill / 2:.0f}" y="176" width="{pill:.0f}" height="44" rx="22" fill="#ec407a" '
+            f'stroke="#ffffff" stroke-width="4"/>')
     out += text(452, 207, series, 26, fill="#ffffff", weight=700)
     return out
 

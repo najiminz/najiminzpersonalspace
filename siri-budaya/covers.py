@@ -101,7 +101,7 @@ TILES = [("#f8bbd0", BC.icon_crayon, ["Melatih", "kemahiran", "motor halus"]),
          ("#c5e1a5", BC.icon_smile, ["Ilustrasi", "menarik dan", "mesra kanak-kanak"])]
 
 
-def held_book(pen):
+def held_book(pen, art=None):
     out = C.p("M352,850 L606,836 L622,1000 L360,1014 Z", "url(#redbook)", stroke=C.OUTLINE, w=4)
     out += C.p("M352,850 L340,860 L348,1022 L360,1014 Z", "#b71c1c", stroke=C.OUTLINE, w=3.5)
     out += C.p("M606,836 L616,830 L632,994 L622,1000", "#fafafa", stroke=C.OUTLINE, w=3)
@@ -111,17 +111,17 @@ def held_book(pen):
             + BC.text(486, 908, "Mewarna", 30, fill="#ffffff", weight=700,
                       extra=f'stroke="{C.OUTLINE}" stroke-width="5" paint-order="stroke"')
             + f'<rect x="400" y="922" width="172" height="74" rx="8" fill="#bfe7fb" stroke="{C.OUTLINE}" stroke-width="2.5"/>'
-            + wau(pen, 486, 958, 0.11) + "</g>")
+            + (art(pen) if art else wau(pen, 486, 958, 0.11)) + "</g>")
     return out
 
 
-def back_kids():
+def back_kids(art=None):
     pen = Pen(True, "bk")
     la_a, ra_a = (-60, -116), (40, -150)
     la_b, ra_b = (-40, -150), (60, -116)
     out = kid(pen, "aisyah", 580, 1010, 1.05, la=la_b, ra=ra_b, sit=True, hands=False)
     out += kid(pen, "amir", 330, 1010, 1.05, la=la_a, ra=ra_a, sit=True, hands=False)
-    out += held_book(pen)
+    out += held_book(pen, art)
     out += kid_hands(pen, "amir", 330, 1010, 1.05, la=(-60, -116), ra=(30, -100), sit=True)
     out += kid_hands(pen, "aisyah", 580, 1010, 1.05, la=(-30, -110), ra=(60, -116), sit=True)
     return out
