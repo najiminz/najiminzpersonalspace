@@ -248,7 +248,40 @@ a big donut below, and the outlined word "Bulatan" at the bottom.
 
 ---
 
-## Kulit depan (berwarna penuh)
+## Kulit depan: gaya seragam untuk semua siri (disyorkan)
+
+Susun atur ini sama seperti kulit "ABC 123", "KENDERAAN", "BUDAYA MALAYSIA" dan "ANGKASA LEPAS" yang telah dijana.
+
+**Tip:** muat naik kulit yang paling anda suka sebagai gambar rujukan, kemudian tulis *"Use the same layout and style as the uploaded cover"* di awal prompt. Hasil untuk siri lain akan jadi jauh lebih seragam.
+
+```
+Front cover of a Malaysian children's coloring book, A4 portrait (aspect ratio 3:4),
+bright full-color cute cartoon style, thick outlines, cheerful, highly detailed, sunny and colorful.
+
+Layout from top to bottom:
+1. Top centre: leave a clean empty white space for a logo (do not draw any logo or text there).
+2. A big wooden sign framed with green leaves, with a huge bubbly multicolor title,
+   each letter a different bright color with a white outline and stitched dashed lines: "[TAJUK]".
+3. Under the sign, a pink rounded banner with white bold text: "[BANNER]".
+4. Under it, a yellow ribbon with dark text: "Siri [NOMBOR] • 30 [SUBJEK] Menarik".
+5. The lower half: [ADEGAN].
+Frame the scene with leafy trees in the top corners, blue sky with clouds and a sun,
+and colorful flowers along the bottom edge.
+
+Use the uploaded character sheet; keep the children identical.
+All Malay text must be spelled exactly as written inside the quotes. No other text.
+```
+
+| Siri | [TAJUK] | [BANNER] | [SUBJEK] | [ADEGAN] |
+|------|---------|----------|----------|----------|
+| 4 | KENDERAAN | Buku Mewarna! | Jenis Kenderaan | cute smiling vehicles with faces on a road in a park: a red fire engine, a yellow school bus with "BAS SEKOLAH", a white-and-black Malaysian police car with "POLIS", a blue car and an orange lorry; a helicopter and a hot air balloon in the sky |
+| 7 | ANGKASA LEPAS | Jom Mewarna! | Angkasa Lepas | a dark purple starry space background; the five children in white astronaut suits with round glass helmets floating; a smiling moon, a smiling Saturn, a rocket, stars and a friendly green alien |
+| 8 | BUDAYA MALAYSIA | Jom Mewarna! | Budaya Menarik | a kampung garden; the five children in traditional clothes (baju Melayu with songkok, baju kurung with tudung, cheongsam, kurta, Kadazan outfit) playing congkak; a wau bulan, a traditional Malay wooden house, a plate of nasi lemak, sate and ketupat |
+| 10 | ABC 123 (with a purple ribbon "Huruf • Nombor • Bentuk") | Buku Mewarna! | Aktiviti Menarik | the five children holding toy blocks "A", "B", "C", "1", "2"; an open book showing "Aa Ayam" with a chicken and "Bb Bola" with a football; a star, a circle, a triangle and a heart floating |
+
+**Selepas jana:** letakkan logo FSKXpert sebenar di ruang kosong di bahagian atas, kerana logo yang dilukis AI biasanya tidak tepat. Semak juga ejaan semua teks.
+
+## Kulit depan: versi asal (berwarna penuh)
 
 ```
 Front cover of a Malaysian children's coloring book, A4 portrait, bright full-color cartoon style,
