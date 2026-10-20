@@ -314,3 +314,65 @@ At the bottom, an empty white rounded panel for publisher details and a barcode 
 ```
 
 Teks penerangan, butiran penerbit, ISBN dan logo lebih baik ditambah selepas itu, supaya ejaan dan nombornya betul.
+
+---
+
+## Halaman penuh gaya "Keluarga Saya" (paling hampir dengan contoh)
+
+Gunakan templat ini untuk menghasilkan halaman seperti contoh "1 Keluarga Saya": lencana nombor merah, bar tajuk, kotak contoh berwarna di penjuru kanan atas, dan lukisan garisan besar di bawah.
+
+**Tip paling penting:** muat naik gambar contoh "Keluarga Saya" bersama prompt, dan mulakan dengan ayat *"Use the uploaded page as an exact layout and style reference."* Gemini akan meniru susun atur dan gayanya dengan lebih tepat.
+
+```
+Use the uploaded page as an exact layout and style reference.
+
+Create one children's coloring book page, A4 portrait (aspect ratio 1:1.414), white background.
+
+LAYOUT (keep exactly):
+- Top-left: a red circle badge with a thick white ring and a big bold white number "[NOMBOR]".
+- Next to the badge: a long rounded light-peach title bar with a thin dark outline and the bold black title "[TAJUK]".
+- Top-right corner: a small rounded square box with a thin dark outline, showing the SAME picture
+  fully colored in bright cheerful colors (a coloring guide).
+- Below: a large rounded rectangle frame with a thick black outline that fills the rest of the page,
+  containing the main picture as black-and-white line art. The colored box overlaps the top-right corner of this frame.
+
+LINE ART STYLE (main picture):
+- Clean, smooth, bold black outlines, pure white fills, no gray, no shading, no hatching, no color.
+- Cute modern cartoon style for children aged 4–7: big round heads, big shiny eyes with highlights,
+  rosy happy faces, wide open smiles, soft rounded hands, friendly expressions.
+- Detailed but easy to color: clear closed shapes, clothes with collars and folds,
+  a full background scene (room or outdoor) with furniture, windows, curtains, plants, clouds or trees.
+- One main scene that fills the frame, characters large in the foreground.
+
+SCENE: [ADEGAN]
+
+TEXT: only the number "[NOMBOR]" and the title "[TAJUK]", spelled exactly like this. No other text, no watermark, no logo.
+```
+
+### Contoh lengkap
+
+```
+... (templat di atas) ...
+[NOMBOR] = 1
+[TAJUK] = Keluarga Saya
+SCENE: A happy Malaysian Muslim family in a cosy living room sitting on a sofa:
+the father in a polo shirt, the mother in a tudung, a boy in a T-shirt, a little girl in a small tudung
+and a girl with a flower hair clip. A round coffee table with a flower pot in front,
+a window with curtains and clouds outside, a framed mountain picture and a table lamp on the wall side.
+```
+
+### Cara isi untuk setiap siri
+
+- **[NOMBOR]** dan **[TAJUK]**: ambil daripada jadual Siri 4, 7, 8 atau 10 di atas (contohnya `3` dan `Congkak`).
+- **[ADEGAN]**: salin ayat adegan daripada jadual itu, kemudian tambah sedikit butiran latar seperti *"in a cosy living room with curtains and a lamp"* atau *"in a sunny kampung garden with coconut trees and flowers"*.
+- **Watak tetap:** kalau mahu Amir, Aisyah, Mei, Ravi dan Lina sama dalam setiap halaman, muat naik helaian watak (Langkah A) bersama gambar contoh, dan tambah: *"Characters must look exactly like the uploaded character sheet."*
+
+### Kalau hasilnya lari
+
+| Masalah | Tambah dalam prompt |
+|---------|---------------------|
+| Ada warna atau kelabu dalam lukisan besar | `The main frame must be pure black lines on white only.` |
+| Kotak berwarna tiada atau berbeza gambar | `The small top-right box must show the exact same scene, colored.` |
+| Ejaan tajuk salah | Jana semula, atau minta `no title text` dan saya tambah tajuk kemudian. |
+| Terlalu ringkas | `Add more background details: furniture, plants, patterns on clothes and cushions.` |
+| Terlalu serabut | `Fewer, larger shapes; more white space.` |
