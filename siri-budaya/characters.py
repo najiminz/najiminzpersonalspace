@@ -80,16 +80,58 @@ def legs(pen, look, outfit, sit):
     if outfit not in ("tshirt", "kurung", "kaamatan"):
         for x in (-22, 22):
             out += pen.line(x - 14, -34, x + 14, -34, sw=1.8)
+    if outfit == "angkasawan":
+        for x in (-22, 22):
+            out += pen.rect(x - 22, -46, 44, 30, fill="#b0bec5", rx=6, sw=DW + 0.6)
+            out += pen.line(x - 22, -60, x + 22, -60, sw=1.8)
     for x in (-24, 24):
-        out += pen.ellipse(x, -9, 27, 13, fill="#5d4037", sw=LW)
+        out += pen.ellipse(x, -9, 27, 13, fill="#5d4037" if outfit != "angkasawan" else "#78909c", sw=LW)
         out += pen.path(f"M{x - 24},-4 Q{x},6 {x + 24},-4", fill="none", w=1.8)
         out += pen.circle(x + (8 if x > 0 else -8), -14, 2.6, fill="#ffffff", sw=1.2)
     return out
 
 
+def suit(pen, look):
+    out = pen.path("M-52,-206 Q-66,-196 -64,-150 L-60,-96 L60,-96 L64,-150 Q66,-196 52,-206 Z", fill="#eceff1")
+    out += pen.rect(-30, -154, 60, 34, fill="#90a4ae", rx=7, sw=DW)
+    for i, c in enumerate(("#e53935", "#fdd835", "#43a047")):
+        out += pen.circle(-16 + i * 16, -143, 5, fill=c, sw=1.4)
+    out += pen.rect(-18, -131, 36, 7, fill="#42a5f5", rx=3, sw=1.2)
+    out += pen.rect(-64, -114, 128, 16, fill="#ff7043", rx=5, sw=DW)
+    out += pen.rect(-12, -116, 24, 20, fill="#cfd8dc", rx=4, sw=1.6)
+    # flag patch on the arm side of the chest
+    out += pen.rect(38, -154, 20, 13, fill="#ffffff", sw=1.4)
+    out += pen.rect(38, -154, 9, 7, fill="#1a237e", sw=1.0)
+    return out + pen.path("M-60,-140 L-44,-140 M44,-140 L60,-140", fill="none", w=1.6)
+
+
+def helmet(pen):
+    glass = 'fill="#e3f2fd" fill-opacity="0.22"' if pen.colored else 'fill="none"'
+    out = f'<circle cx="0" cy="{HELMET[1]}" r="{HELMET[2]}" {glass} stroke="{INK}" stroke-width="{pen.sw(LW)}"/>'
+    out += pen.path("M-68,-330 Q-48,-358 -16,-366", fill="none", w=DW + 1)
+    out += pen.path("M-56,-312 Q-48,-324 -36,-330", fill="none", w=DW)
+    return out + pen.rect(-70, -178, 140, 22, fill="#b0bec5", rx=11, sw=DW + 0.6)
+
+
+HELMET = (0, -272, 100)
+
+
+def in_helmet(pen, svg):
+    cx, cy, r = HELMET
+    return pen.clipped(f"M{cx - r + 3},{cy} A{r - 3},{r - 3} 0 1 0 {cx + r - 3},{cy} A{r - 3},{r - 3} 0 1 0 "
+                       f"{cx - r + 3},{cy} Z", svg)
+
+
+def backpack(pen):
+    out = pen.rect(-78, -232, 156, 130, fill="#cfd8dc", rx=16, sw=DW + 0.6)
+    return out + pen.tube("M-60,-232 Q-90,-270 -70,-300", 10, "#90a4ae")
+
+
 def torso(pen, look, outfit):
     top, bottom = look["top"], look["bottom"]
     out = ""
+    if outfit == "angkasawan":
+        return suit(pen, look)
     if outfit == "tshirt":
         out += pen.path("M-50,-114 L50,-114 L46,-66 L6,-66 L0,-88 L-6,-66 L-46,-66 Z", fill=bottom)
         out += pen.path("M-44,-202 Q-58,-196 -56,-150 L-52,-108 L52,-108 L56,-150 Q58,-196 44,-202 Z", fill=top)
@@ -158,8 +200,9 @@ def torso(pen, look, outfit):
 
 def hand(pen, look, pos):
     side = 1 if pos[0] > 0 else -1
-    out = pen.ellipse(pos[0] - side * 12, pos[1] - 8, 7, 9, fill=look["skin"], sw=DW, rot=side * 30)
-    out += pen.circle(pos[0], pos[1], 15, fill=look["skin"], sw=LW)
+    skin = look.get("glove", look["skin"])
+    out = pen.ellipse(pos[0] - side * 12, pos[1] - 8, 7, 9, fill=skin, sw=DW, rot=side * 30)
+    out += pen.circle(pos[0], pos[1], 15 if "glove" not in look else 18, fill=skin, sw=LW)
     return out + pen.path(f"M{pos[0] - 5},{pos[1] + 6} L{pos[0] - 5},{pos[1] + 12} M{pos[0] + 3},{pos[1] + 7} "
                           f"L{pos[0] + 3},{pos[1] + 13}", fill="none", w=1.4)
 
@@ -176,7 +219,8 @@ def arm(pen, look, outfit, side, hand):
     else:
         out += pen.tube(f"M{sx},-190 L{hx},{hy}", 26, sleeve)
         a, b = 0.8, 0.9
-        cuff = {"bajumelayu": "#fdd835", "kurta": "#fff8e1", "kaamatan": "#fdd835", "samfu": "#fdd835"}.get(outfit, sleeve)
+        cuff = {"bajumelayu": "#fdd835", "kurta": "#fff8e1", "kaamatan": "#fdd835", "samfu": "#fdd835",
+                "angkasawan": "#ff7043"}.get(outfit, sleeve)
         out += pen.tube(f"M{sx + (hx - sx) * a:.1f},{-190 + (hy + 190) * a:.1f} "
                         f"L{sx + (hx - sx) * b:.1f},{-190 + (hy + 190) * b:.1f}", 26, cuff)
     return out
@@ -251,13 +295,18 @@ def kid(pen, who, x, y, s=1.0, la=(-64, -112), ra=(64, -112), outfit=None, sit=F
     if outfit in ("bajumelayu", "silat"):
         look["top"] = {"bajumelayu": "#26a69a", "silat": "#212121"}[outfit]
         look["bottom"] = look["top"]
+    if outfit == "angkasawan":
+        look.update(top="#eceff1", bottom="#eceff1", glove="#eceff1")
     k0 = pen.k
     pen.k = k0 / s
     up = f'<g transform="translate(0,{SIT})">' if sit else "<g>"
     body = legs(pen, look, outfit, sit)
     arms = arm(pen, look, outfit, -1, la) + arm(pen, look, outfit, 1, ra)
-    upper = "" if arms_front else arms
+    upper = backpack(pen) if outfit == "angkasawan" else ""
+    upper += "" if arms_front else arms
     upper += torso(pen, look, outfit) if not (sit and outfit in ("kurung", "kaamatan")) else _sit_top(pen, look, outfit)
+    torso_svg = upper
+    upper = ""
     upper += hair_back(pen, look)
     if look["hair"] == "tudung":
         upper += pen.ellipse(0, -258, 52, 58, fill=look["skin"])
@@ -270,6 +319,10 @@ def kid(pen, who, x, y, s=1.0, la=(-64, -112), ra=(64, -112), outfit=None, sit=F
         upper += face(pen, look)
     upper += hair_front(pen, look)
     upper += hat(pen, headwear or {"bajumelayu": "songkok", "silat": "tanjak"}.get(outfit))
+    if outfit == "angkasawan":
+        upper = torso_svg + in_helmet(pen, upper) + helmet(pen)
+    else:
+        upper = torso_svg + upper
     upper += (arms if arms_front else "")
     if hands:
         upper += hand(pen, look, la) + hand(pen, look, ra)
