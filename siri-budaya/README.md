@@ -45,3 +45,6 @@ python3 jana.py finish
 - `covers.py`: the covers
 
 The page template is shared with `../siri-kenderaan`.
+
+## Front cover
+`kulit-hadapan.jpg` is the front cover made in Gemini. When this file is present, the build uses it as page 1 instead of the drawn cover: it is scaled to A4 at 300 DPI, centre-cropped and lightly sharpened (see `../siri-kenderaan/cover_image.py`). Delete the file to go back to the drawn cover.

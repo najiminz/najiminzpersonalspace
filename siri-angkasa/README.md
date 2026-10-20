@@ -32,3 +32,6 @@ python3 jana.py finish
 - `kulit.py`: the covers
 
 The template comes from `../siri-kenderaan`, and the cast, with its space suit, from `../siri-budaya/characters.py`.
+
+## Front cover
+`kulit-hadapan.jpg` is the front cover made in Gemini. When this file is present, the build uses it as page 1 instead of the drawn cover: it is scaled to A4 at 300 DPI, centre-cropped and lightly sharpened (see `../siri-kenderaan/cover_image.py`). Delete the file to go back to the drawn cover.

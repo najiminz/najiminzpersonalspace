@@ -57,3 +57,6 @@ python3 generate.py finish
 ```
 Set `PAGES=7,12` to rebuild only some pages. Page order, titles and scenes are listed in `PAGES` in `generate.py`. The vehicles are in `vehicles.py`, the backgrounds in `scenes.py`, the covers in `cover.py` and `back_cover.py`, and the shared drawing helpers in `draw.py`.
 The font is Fredoka (SIL Open Font License, see `fonts/OFL.txt`).
+
+## Front cover
+`kulit-hadapan.jpg` is the front cover made in Gemini. When this file is present, the build uses it as page 1 instead of the drawn cover: it is scaled to A4 at 300 DPI, centre-cropped and lightly sharpened (see `../siri-kenderaan/cover_image.py`). Delete the file to go back to the drawn cover.

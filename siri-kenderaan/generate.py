@@ -17,6 +17,7 @@ from PIL import Image, ImageFont
 import scenes as S
 from back_cover import back_cover_svg
 from cover import cover_svg
+from cover_image import make_cover_png, supplied_cover
 import vehicles as V
 from draw import FRAME, GROUND, H, INK, W, Pen
 
@@ -184,7 +185,14 @@ def build_svg():
                   for w, n in ((400, "Regular"), (500, "Medium"), (600, "SemiBold"), (700, "Bold")))
     jobs = [(slug(i, page[0]), lambda i=i, page=page: page_svg(i, page)) for i, page in selected()]
     if wanted() is None or 0 in wanted():
-        jobs.insert(0, (COVER, cover_svg))
+        picture = supplied_cover(HERE)
+        if picture:  # a ready-made front cover picture replaces the drawn one
+            make_cover_png(picture, os.path.join(BUILD, f"{COVER}.png"))
+            stale = os.path.join(OUT, "svg", f"{COVER}.svg")
+            if os.path.exists(stale):
+                os.remove(stale)
+        else:
+            jobs.insert(0, (COVER, cover_svg))
     if wanted() is None or 99 in wanted():
         jobs.append((BACK, back_cover_with_cast))
     for name, make in jobs:

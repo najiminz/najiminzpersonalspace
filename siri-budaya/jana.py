@@ -17,6 +17,7 @@ sys.path.insert(0, HERE)
 from PIL import Image  # noqa: E402
 
 import generate as T  # noqa: E402  (the shared Siri Kenderaan template)
+from cover_image import make_cover_png, supplied_cover  # noqa: E402
 from draw import Pen  # noqa: E402
 from subjects import PAGES  # noqa: E402
 
@@ -55,6 +56,14 @@ def build_svg():
     css = "".join(T.font_face("Fredoka", w, os.path.join(fonts, f"Fredoka-{n}.ttf"))
                   for w, n in ((400, "Regular"), (500, "Medium"), (600, "SemiBold"), (700, "Bold")))
     todo = jobs()
+    picture = supplied_cover(HERE)
+    if picture and any(name == COVER for name, _ in todo):
+        # a ready-made front cover picture replaces the drawn one
+        todo = [(name, make) for name, make in todo if name != COVER]
+        make_cover_png(picture, os.path.join(BUILD, f"{COVER}.png"))
+        stale = os.path.join(OUT, "svg", f"{COVER}.svg")
+        if os.path.exists(stale):
+            os.remove(stale)
     for name, make in todo:
         svg = make()
         with open(os.path.join(OUT, "svg", f"{name}.svg"), "w") as fh:
