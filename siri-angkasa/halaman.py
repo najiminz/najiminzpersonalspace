@@ -7,7 +7,7 @@ get the cast's friendly face.
 import math
 import random
 
-from characters import face, kid
+from characters import HEAD_SCALE, NECK, face, kid
 from draw import DW, GLASS, INK, LW, W, blob_d, cloud, star_d
 from subjects import jalur_gemilang, small_house, tufts
 
@@ -283,9 +283,16 @@ def earth_arc(pen, cy=1500, r=520):
     return out + pen.clipped(d, inner) + pen.circle(452, cy, r, fill="none")
 
 
-def glasses(pen, x, y, s, look_y=-262):
-    return scaled(pen, s, x, y, lambda p: p.rect(-50, look_y - 16, 42, 30, fill="#424242", rx=8) +
-                  p.rect(8, look_y - 16, 42, 30, fill="#424242", rx=8) + p.line(-8, look_y - 4, 8, look_y - 4, sw=DW))
+def glasses(pen, x, y, s, look_y=-258):
+    """Eclipse glasses over the cast's eyes (drawn in the same shrunken head space as the face)."""
+    def draw(p):
+        k0 = p.k
+        p.k = k0 / HEAD_SCALE
+        g = (p.rect(-46, look_y - 18, 40, 34, fill="#424242", rx=9) + p.rect(6, look_y - 18, 40, 34, fill="#424242", rx=9)
+             + p.line(-6, look_y - 6, 6, look_y - 6, sw=DW))
+        p.k = k0
+        return f'<g transform="translate(0,{NECK}) scale({HEAD_SCALE}) translate(0,{-NECK})">{g}</g>'
+    return scaled(pen, s, x, y, draw)
 
 
 # ---------------------------------------------------------------- pages 1-11: sistem suria
@@ -543,7 +550,7 @@ def s_gerhana(pen):
                   + p.path("M-14,18 Q0,26 14,18", fill="none", w=DW))
     for x, w, s in ((190, "mei", 0.85), (450, "amir", 0.9), (700, "ravi", 0.85)):
         out += kid(pen, w, x, 1220, s, la=(-60, -112), ra=(64, -112))
-        out += glasses(pen, x, 1220, s, -256 if w == "aisyah" else -262)
+        out += glasses(pen, x, 1220, s)
     return out
 
 

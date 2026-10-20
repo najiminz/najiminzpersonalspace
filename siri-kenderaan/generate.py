@@ -153,6 +153,14 @@ def font_face(name, weight, path):
             f"src:url(data:font/ttf;base64,{data}) format('truetype');}}")
 
 
+def back_cover_with_cast():
+    """Back cover with the shared cast of children (Amir and Aisyah from ../siri-budaya)."""
+    sys.path.insert(0, os.path.join(HERE, "..", "siri-budaya"))
+    from cover import vehicle
+    from covers import back_kids
+    return back_cover_svg(kids=lambda: back_kids(lambda pen: vehicle(V.bas_sekolah, 434, 990, 0.13, prefix="hb")))
+
+
 COVER = "00-kulit-hadapan"
 BACK = "99-kulit-belakang"  # PAGES=99 builds just the back cover
 
@@ -178,7 +186,7 @@ def build_svg():
     if wanted() is None or 0 in wanted():
         jobs.insert(0, (COVER, cover_svg))
     if wanted() is None or 99 in wanted():
-        jobs.append((BACK, back_cover_svg))
+        jobs.append((BACK, back_cover_with_cast))
     for name, make in jobs:
         svg = make()
         with open(os.path.join(OUT, "svg", f"{name}.svg"), "w") as fh:
