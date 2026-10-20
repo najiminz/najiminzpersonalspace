@@ -286,15 +286,34 @@ def payung(pen):
     return out
 
 
-def quran(pen):
-    out = pen.tube("M-140,140 L120,-40 M140,140 L-120,-40", 26, "#8d6e63")
+def rehal(pen):
+    """Wooden X-shaped Quran stand with the Quran open on it (drawn around 0,0, about 340 wide)."""
+    out = pen.tube("M-140,140 L120,-40 M140,140 L-120,-40", 26, "#e53935")
     out += pen.path("M0,-30 L-170,-80 L-170,-170 L0,-120 Z", fill="#ffffff")
     out += pen.path("M0,-30 L170,-80 L170,-170 L0,-120 Z", fill="#ffffff")
-    out += pen.path("M-150,-86 L-150,-156 L-20,-118 L-20,-48 Z M150,-86 L150,-156 L20,-118 L20,-48 Z", fill="none",
-                    w=DW - 0.4)
-    for s in (-1, 1):
-        out += pen.path(star_d(s * 85, -100, 22, 10, 8), fill="#fdd835", w=DW - 0.4)
-    out += pen.path("M0,-30 L-170,-80 L-170,-60 L0,-10 L170,-60 L170,-80 Z", fill="#43a047")
+    for k in range(4):
+        out += pen.line(-150, -150 + k * 18 + 6, -20, -110 + k * 18 + 6, sw=1.4)
+        out += pen.line(20, -110 + k * 18 + 6, 150, -150 + k * 18 + 6, sw=1.4)
+    out += pen.path("M0,-30 L-170,-80 L-170,-60 L0,-10 L170,-60 L170,-80 Z", fill="#1e88e5")
+    return out
+
+
+QARI = dict(top="#43a047", bottom="#5d4037")
+
+
+def qari(pen):
+    """A young qari: Amir in a kopiah, sitting cross-legged and reciting from the Quran on a rehal."""
+    la, ra = (40, -150), (110, -170)
+    out = kid(pen, "amir", -70, 190, 1.1, la=la, ra=ra, sit=True, headwear="kopiah", hands=False, colors=QARI,
+              outfit="kurta")
+    k0 = pen.k
+    pen.k = k0 / 0.62
+    out += f'<g transform="translate(95,95) scale(0.62)">{rehal(pen)}</g>'
+    pen.k = k0
+    from characters import kid_hands
+    out += kid_hands(pen, "amir", -70, 190, 1.1, la=la, ra=ra, sit=True)
+    for x, y in ((-200, -130), (-220, -60)):
+        out += pen.path(f"M{x},{y} q14,-16 28,0 q14,16 28,0", fill="none", w=DW)
     return out
 
 

@@ -327,6 +327,14 @@ def hair_front(pen, look):
 
 
 def hat(pen, kind):
+    if kind == "kopiah":
+        cap = "M-64,-292 Q-64,-376 0,-378 Q64,-376 64,-292 Q0,-306 -64,-292 Z"
+        out = pen.path(cap, fill="#ffffff")
+        band = "M-64,-292 Q0,-306 64,-292 L62,-326 Q0,-340 -62,-326 Z"
+        out += pen.path(band, fill="#66bb6a", w=DW)
+        out += pen.clipped(band, "".join(pen.path(f"M{x},-298 L{x + 11},-332 L{x + 22},-298", fill="#a5d6a7", w=1.4)
+                                         for x in range(-72, 70, 22)))
+        return out + pen.path(band, fill="none", w=DW)
     if kind == "songkok":
         return pen.path("M-50,-318 L-46,-356 Q0,-366 46,-356 L50,-318 Q0,-326 -50,-318 Z", fill="#212121")
     if kind == "tanjak":
@@ -337,8 +345,9 @@ def hat(pen, kind):
 
 
 def kid(pen, who, x, y, s=1.0, la=(-64, -112), ra=(64, -112), outfit=None, sit=False, headwear=None,
-        arms_front=False, hands=True):
+        arms_front=False, hands=True, colors=None):
     look = dict(CAST[who])
+    look.update(colors or {})
     outfit = outfit or look["outfit"]
     if outfit in ("bajumelayu", "silat"):
         look["top"] = {"bajumelayu": "#26a69a", "silat": "#212121"}[outfit]

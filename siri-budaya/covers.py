@@ -80,7 +80,9 @@ def front_cover_svg(px_w=2480, px_h=3508):
 # ---------------------------------------------------------------- back
 
 def icon_wau(cx, cy):
-    return wau(Pen(False, "iw"), cx, cy + 4, 0.15)
+    pen = Pen(False, "iw")
+    pen.weight = 0.3
+    return wau(pen, cx, cy + 4, 0.15)
 
 
 def icon_heart(cx, cy):
@@ -101,6 +103,12 @@ TILES = [("#f8bbd0", BC.icon_crayon, ["Melatih", "kemahiran", "motor halus"]),
          ("#c5e1a5", BC.icon_smile, ["Ilustrasi", "menarik dan", "mesra kanak-kanak"])]
 
 
+def small_wau(cx, cy):
+    pen = Pen(True, "sw")
+    pen.weight = 0.3
+    return wau(pen, cx, cy, 0.11)
+
+
 def held_book(pen, art=None):
     out = C.p("M352,850 L606,836 L622,1000 L360,1014 Z", "url(#redbook)", stroke=C.OUTLINE, w=4)
     out += C.p("M352,850 L340,860 L348,1022 L360,1014 Z", "#b71c1c", stroke=C.OUTLINE, w=3.5)
@@ -111,7 +119,7 @@ def held_book(pen, art=None):
             + BC.text(486, 908, "Mewarna", 30, fill="#ffffff", weight=700,
                       extra=f'stroke="{C.OUTLINE}" stroke-width="5" paint-order="stroke"')
             + f'<rect x="400" y="922" width="172" height="74" rx="8" fill="#bfe7fb" stroke="{C.OUTLINE}" stroke-width="2.5"/>'
-            + (art(pen) if art else wau(pen, 486, 958, 0.11)) + "</g>")
+            + (art(pen) if art else small_wau(486, 958)) + "</g>")
     return out
 
 

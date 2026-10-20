@@ -20,7 +20,7 @@ Thirty coloring pages about space, with a front and back cover. They use the sam
 - `siri-7-angkasa-lepas-A4-300dpi.pdf`: front cover, 30 pages and back cover (32 pages, lossless)
 - `svg/*.svg`: vector versions
 
-The front cover has the FSKXpert logo. The back cover has the UPSI and FSKXpert logos with the publisher details. **Before printing:** the ISBN and barcode are placeholders.
+The front cover has the FSKXpert logo. The back cover has the FSKXpert logo again in the publisher panel. **Before printing:** the ISBN and barcode are placeholders.
 
 ## Regenerating
 ```

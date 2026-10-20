@@ -10,7 +10,7 @@ Thirty coloring pages about Malaysian culture, with a front and back cover. They
   - **Mei**, a Chinese girl
   - **Ravi**, an Indian boy
   - **Lina**, a Kadazan girl
-- **The FSKXpert logo** is on the front cover. The back cover has the UPSI and FSKXpert logos with the publisher details.
+- **The FSKXpert logo** is on the front cover. The back cover has the FSKXpert logo in the publisher panel.
 - **Detailed illustrations.** Clothes have fabric prints and trims, hands and shoes have detail, and backgrounds include hills, trees, flowers, wall panelling and decorations.
 
 | # | Halaman | # | Halaman | # | Halaman |

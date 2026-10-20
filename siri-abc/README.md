@@ -7,7 +7,7 @@ Thirty coloring pages with a front and back cover. They use the same template as
 | | | | | |
 |---|---|---|---|---|
 | A Ayam · B Bola | C Cawan · D Durian | E Epal · F Feri | G Gajah · H Harimau | I Ikan · J Jam |
-| K Kucing · L Lebah | M Matahari · N Nanas | O Oren · P Payung | Q Quran · R Rama-rama | S Siput · T Tembikai |
+| K Kucing · L Lebah | M Matahari · N Nanas | O Oren · P Payung | Q Qari · R Rama-rama | S Siput · T Tembikai |
 | U Ular · V Van | W Wau · X Xilofon | Y Yo-yo · Z Zirafah | | |
 
 **Nombor (pages 14–23).** An outline numeral, the number word, and that many objects to color and count:

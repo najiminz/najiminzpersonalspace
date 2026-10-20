@@ -53,7 +53,7 @@ WORDS = [
     ("G", "Gajah", O.gajah, {}), ("H", "Harimau", O.harimau, {}), ("I", "Ikan", O.ikan, {}),
     ("J", "Jam", O.jam, {}), ("K", "Kucing", O.kucing, {}), ("L", "Lebah", O.lebah, {}),
     ("M", "Matahari", O.matahari, {}), ("N", "Nanas", O.nanas, {}), ("O", "Oren", O.oren, {}),
-    ("P", "Payung", O.payung, dict(dx=20, dy=-80, s=0.78)), ("Q", "Quran", O.quran, {}),
+    ("P", "Payung", O.payung, dict(dx=20, dy=-80, s=0.78)), ("Q", "Qari", O.qari, dict(dy=60, s=0.86)),
     ("R", "Rama-rama", O.rama_rama, {}), ("S", "Siput", O.siput, {}), ("T", "Tembikai", O.tembikai, {}),
     ("U", "Ular", O.ular, {}), ("V", "Van", O.van, dict(dy=40, s=1.15)), ("W", "Wau", O.wau, dict(dy=-43)),
     ("X", "Xilofon", O.xilofon, {}), ("Y", "Yo-yo", O.yoyo, dict(dx=20, dy=45, s=0.9)),

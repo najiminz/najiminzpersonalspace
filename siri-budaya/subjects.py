@@ -289,35 +289,76 @@ def sea(pen, horizon=900):
 
 # ---------------------------------------------------------------- 1-5 permainan tradisional
 
-def wau(pen, cx, cy, s=1.0):
-    def side():
-        o = pen.path("M0,-205 C80,-232 222,-232 272,-170 C232,-150 202,-112 192,-60 C140,-92 70,-92 0,-60 Z",
-                     fill="#e53935")
-        o += pen.path("M40,-180 C90,-205 170,-205 220,-172 C186,-150 166,-122 160,-92 C120,-110 70,-110 30,-96 Z",
-                      fill="#fdd835", w=DW)
-        o += pen.path("M70,-150 C96,-182 150,-176 148,-148 C146,-128 118,-130 120,-148", fill="none", w=DW)
-        o += small_flower(pen, 200, -150, 13, "#1e88e5")
-        o += pen.path("M48,-118 Q110,-146 150,-112", fill="none", w=DW)
-        o += pen.path("M272,-170 L300,-150 L284,-140 Z M192,-60 L214,-36 L198,-30 Z", fill="#1e88e5", w=DW)
-        o += pen.path("M60,60 C110,74 150,80 210,60 C200,120 170,160 120,180", fill="none")
-        o += pen.path("M95,110 C110,90 140,96 136,116 C132,132 112,126 116,114", fill="none", w=DW)
-        return o
+WAU_WINGS = ("M-290,-70 Q-190,-205 -34,-196 L0,-250 L34,-196 Q190,-205 290,-70 "
+             "Q180,-34 36,-4 L0,34 L-36,-4 Q-180,-34 -290,-70 Z")
+WAU_MOON = "M-280,30 C-300,340 300,340 280,30 C230,250 -230,250 -280,30 Z"
 
-    out = pen.path("M-150,-262 Q0,-344 150,-262", fill="none", w=LW + 2)
-    out += pen.line(-150, -262, 150, -262, sw=DW - 0.6)
-    out += pen.path("M60,40 C120,40 170,20 214,60 C200,140 120,200 0,206 L0,40 Z", fill="#1e88e5")
-    out += mirror(pen.path("M60,40 C120,40 170,20 214,60 C200,140 120,200 0,206 L0,40 Z", fill="#1e88e5"), 0)
-    out += pen.path("M-150,70 C-110,150 110,150 150,70 L120,84 C90,128 -90,128 -120,84 Z", fill="#ffffff")
-    out += side() + mirror(side(), 0)
-    out += pen.path("M-28,-62 L28,-62 L40,44 L-40,44 Z", fill="#43a047")
-    out += small_flower(pen, 0, -10, 16, "#fdd835")
-    out += pen.ellipse(0, -236, 24, 30, fill="#fdd835", sw=LW)
-    out += pen.line(0, -266, 0, 206, sw=DW)
-    return f'<g transform="translate({cx},{cy}) scale({s})">{out}</g>'
+
+def floral(pen, x, y, r, color, rot=0):
+    """Batik-style flower with two leaves, the motif painted all over a wau bulan."""
+    out = ""
+    for side in (-1, 1):
+        a = math.radians(rot + 90 + side * 55)
+        lx, ly = x + r * 1.5 * math.cos(a), y + r * 1.5 * math.sin(a)
+        out += pen.ellipse(round(lx), round(ly), round(r * 0.9), round(r * 0.42), fill="#66bb6a", sw=1.4,
+                           rot=round(rot + side * 55))
+    return out + small_flower(pen, x, y, r, color)
+
+
+def wau(pen, cx, cy, s=1.0):
+    """Wau bulan: leaf-shaped wings with two yellow panels, a crescent-moon tail and floral decoration."""
+    k0 = pen.k
+    pen.k = k0 / s
+    colors = ("#f06292", "#4fc3f7", "#ffb74d", "#ba68c8")
+    rnd = random.Random(7)
+    # wings: maroon body covered in flowers, gold rim, two yellow panels, big flower in the middle
+    out = pen.path(WAU_WINGS, fill="#6a1b4d")
+    pattern = ""
+    for row in range(-4, 2):
+        for col in range(-5, 6):
+            x, y = col * 62 + (31 if row % 2 else 0), row * 56 - 10
+            pattern += floral(pen, x, y, 16, colors[(row + col) % 4], rnd.choice((0, 30, -30)))
+    out += pen.clipped(WAU_WINGS, pattern)
+    out += pen.path(WAU_WINGS, fill="none", w=LW)
+    out += f'<g transform="translate(0,6) scale(0.93)">{pen.path(WAU_WINGS, fill="none", w=DW)}</g>'
+    for side in (-1, 1):
+        panel = (f"M{side * 70},-150 Q{side * 120},-176 {side * 170},-150 Q{side * 210},-136 {side * 228},-96 "
+                 f"Q{side * 180},-104 {side * 160},-80 Q{side * 120},-96 {side * 92},-70 Q{side * 96},-106 "
+                 f"{side * 70},-120 Z")
+        out += pen.path(panel, fill="#fdd835")
+        px = side * 150
+        out += pen.path(f"M{px},-136 Q{px - 18},-118 {px},-98 Q{px + 18},-118 {px},-136 Z", fill="#ffb300", w=1.6)
+        out += pen.path(f"M{px - 26},-114 Q{px - 10},-106 {px},-98 M{px + 26},-114 Q{px + 10},-106 {px},-98",
+                        fill="none", w=1.6)
+    for k in range(10):
+        a = 2 * math.pi * k / 10
+        out += pen.ellipse(round(26 * math.cos(a)), round(-96 + 26 * math.sin(a)), 17, 8, fill="#f48fb1", sw=1.6,
+                           rot=round(math.degrees(a)))
+    out += pen.circle(0, -96, 14, fill="#fdd835", sw=DW)
+    # crescent-moon tail joined to the spine
+    out += pen.path(WAU_MOON, fill="#6a1b4d")
+    band = ""
+    for k in range(11):
+        t = k / 10
+        a = math.pi * (1 - t)
+        x, y = 255 * math.cos(a) * -1, 60 + 205 * math.sin(a) ** 0.9
+        band += floral(pen, round(x), round(y), 15, colors[k % 4], round(math.degrees(a)))
+    out += pen.clipped(WAU_MOON, band)
+    out += pen.path(WAU_MOON, fill="none", w=LW)
+    out += pen.path("M-262,52 C-270,300 270,300 262,52", fill="none", w=DW)
+    out += pen.line(0, 34, 0, 236, sw=DW)
+    # tassels at the head and wing tips
+    for x, y, c in ((0, -250, "#e53935"), (-290, -70, "#43a047"), (290, -70, "#43a047")):
+        for d in (-10, 0, 10):
+            out += pen.path(f"M{x},{y} Q{x + d - 6},{y - 30} {x + d * 1.6},{y - 54}", fill="none", w=2.2)
+        out += pen.circle(x, y, 7, fill=c, sw=1.8)
+    out = f'<g transform="translate({cx},{cy}) scale({s})">{out}</g>'
+    pen.k = k0
+    return out
 
 
 def s_wau(pen):
-    out = wau(pen, 450, 640, 1.0)
+    out = wau(pen, 450, 570, 0.9)
     out += pen.path("M450,700 Q330,820 214,814", fill="none", w=DW)
     out += kid(pen, "amir", 170, GY, 0.95, la=(-60, -112), ra=(46, -316))
     out += kid(pen, "aisyah", 740, GY, 0.9, la=(-96, -300), ra=(96, -300))

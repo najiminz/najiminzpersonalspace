@@ -22,7 +22,7 @@ def width(name, h):
 
 
 def logo(name, x, y, h):
-    """Logo `name` ("upsi" or "fskxpert") with its top-left corner at (x, y) and height h."""
+    """Logo `name` (a file in logo/, e.g. "fskxpert") with its top-left corner at (x, y) and height h."""
     aspect, data = _load(name)
     return (f'<image href="data:image/png;base64,{data}" x="{x:.1f}" y="{y:.1f}" width="{aspect * h:.1f}" '
             f'height="{h:.1f}" preserveAspectRatio="xMidYMid meet"/>')

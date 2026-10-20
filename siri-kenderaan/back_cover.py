@@ -291,14 +291,14 @@ def barcode(x, y):
 
 def panel():
     out = f'<rect x="40" y="1060" width="825" height="196" rx="22" fill="#ffffff" fill-opacity="0.97" stroke="#e0e0e0" stroke-width="2"/>'
-    out += logos.logo("fskxpert", 64, 1074, 60)
+    out += text(72, 1096, "Diterbitkan oleh:", 17, fill="#1a3a8f", weight=700, anchor="start")
     for i, line in enumerate(["Fakulti Sains Kemanusiaan", "Universiti Pendidikan Sultan Idris",
                               "Tanjong Malim, Perak."]):
-        out += text(72, 1152 + i * 20, line, 15, fill="#263238", weight=400, anchor="start")
-    out += f'<circle cx="82" cy="1226" r="11" fill="#1a3a8f"/>'
-    out += p("M71,1226 L93,1226 M82,1215 Q76,1226 82,1237 Q88,1226 82,1215", "none", stroke="#ffffff", w=1.6)
-    out += text(100, 1232, "fskxpert.upsi.my", 17, fill="#263238", weight=500, anchor="start")
-    out += logos.logo("upsi", 470 - logos.width("upsi", 110) / 2, 1086, 110)
+        out += text(72, 1126 + i * 22, line, 16, fill="#263238", weight=400, anchor="start")
+    out += f'<circle cx="82" cy="1214" r="11" fill="#1a3a8f"/>'
+    out += p("M71,1214 L93,1214 M82,1203 Q76,1214 82,1225 Q88,1214 82,1203", "none", stroke="#ffffff", w=1.6)
+    out += text(100, 1220, "fskxpert.upsi.my", 17, fill="#263238", weight=500, anchor="start")
+    out += logos.logo("fskxpert", 452 - logos.width("fskxpert", 96) / 2, 1110, 96)
     out += f'<rect x="604" y="1072" width="248" height="62" rx="12" fill="#ffffff" stroke="#1a3a8f" stroke-width="2.5"/>'
     out += text(728, 1096, "Prof. Madya Dr. Kamarul Ismail", 14.5, fill="#1a3a8f", weight=600)
     out += f'<circle cx="634" cy="1116" r="12" fill="#25d366"/>'
