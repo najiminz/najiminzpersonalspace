@@ -23,8 +23,9 @@ Prompt ditulis dalam **Bahasa Inggeris** kerana Gemini lebih tepat mengikut arah
 ```
 Create a character reference sheet for a children's coloring book series.
 Five Malaysian children, about 7 years old, standing side by side, front view, full body,
-in a simple cute cartoon style: round heads, small round black dot eyes, small happy smile,
-rosy cheeks, short chubby bodies, thick clean black outlines, flat bright colors, plain white background.
+in a cute chibi anime-inspired children's cartoon style: big round heads, very big shiny eyes with large black pupils and white highlights, rosy cheeks, wide happy open-mouth smiles, small noses, soft rounded hands, fluffy detailed hair,
+short chubby bodies, thick clean black outlines, bright cheerful colors, plain white background
+(same style as the uploaded "Keluarga Saya" page).
 
 1. Amir – Malay boy, short spiky dark-brown hair, blue T-shirt with a small yellow star and a pocket, navy shorts, brown shoes.
 2. Aisyah – Malay girl, lilac tudung, pink baju kurung with small white and yellow flower prints.
@@ -32,7 +33,7 @@ rosy cheeks, short chubby bodies, thick clean black outlines, flat bright colors
 4. Ravi – Indian boy, curly dark hair, yellow kurta with buttons and an embroidered hem, cream trousers.
 5. Lina – Kadazan girl, black hair in a bun with a red beaded headband, black Kadazan traditional outfit with gold trims and a red sash.
 
-No text, no anime style, no realistic shading.
+No text, no realistic proportions, no realistic shading.
 ```
 
 Kemudian jana versi garisan (line art) untuk rujukan halaman mewarna:
@@ -52,9 +53,9 @@ thick black outlines only, pure white fill, no gray, no shading, no color.
 Children's coloring book page illustration, black and white line art only.
 Thick, bold, clean black outlines (consistent line width), pure white background and white fills,
 no gray, no shading, no gradients, no hatching, no color.
-Simple cute cartoon style for preschool children aged 4–7: round shapes, friendly faces with dot eyes,
-large areas that are easy to color, one main subject in the centre, a simple background scene
-with a few details (trees, clouds, flowers), plenty of white space.
+Characters drawn in a cute chibi anime-inspired children's cartoon style: big round heads, very big shiny eyes with large black pupils and white highlights, rosy cheeks, wide happy open-mouth smiles, small noses, soft rounded hands, fluffy detailed hair.
+Large areas that are easy to color, one main scene, a detailed background
+(room or outdoor scene with furniture, windows, plants, trees, clouds, flowers).
 Portrait orientation, aspect ratio 3:4. No text, no letters, no numbers, no border, no frame.
 Characters (use the uploaded character sheet as reference, keep them identical): [nama watak jika ada].
 Scene:
@@ -69,7 +70,7 @@ next to it a rounded peach title bar with the bold black title "[TAJUK]";
 top-right, a small rounded box with a fully colored version of the same picture as a coloring guide;
 below, a large rounded rectangle frame containing the main picture as black-and-white line art
 (thick clean black outlines, white fill, no gray, no shading).
-Simple cute cartoon style for preschool children, plenty of white space, one main subject.
+Characters drawn in a cute chibi anime-inspired children's cartoon style: big round heads, very big shiny eyes with large black pupils and white highlights, rosy cheeks, wide happy open-mouth smiles, small noses, soft rounded hands, fluffy detailed hair; detailed background scene, one main scene.
 Malay text must be spelled exactly as given.
 Scene:
 ```
@@ -268,7 +269,7 @@ Layout from top to bottom:
 Frame the scene with leafy trees in the top corners, blue sky with clouds and a sun,
 and colorful flowers along the bottom edge.
 
-Use the uploaded character sheet; keep the children identical.
+Children in the same cute chibi style with very big shiny eyes; use the uploaded character sheet and keep them identical.
 All Malay text must be spelled exactly as written inside the quotes. No other text.
 ```
 
@@ -289,7 +290,7 @@ thick outlines, cheerful. At the top, a small red ribbon with "SIRI [NOMBOR]".
 A big bubbly multicolor title with white stitched outlines: "[TAJUK]".
 Below it, a wooden sign reading "Buku Mewarna" and "untuk Kanak-kanak",
 and a starburst badge "30 GAMBAR". Leave an empty white rounded box at the top-left corner for a logo.
-Scene: [lihat di bawah]. Use the uploaded character sheet; keep the characters identical.
+Scene: [lihat di bawah]. Children in the same cute chibi style with very big shiny eyes; use the uploaded character sheet and keep the characters identical.
 Malay text must be spelled exactly as given.
 ```
 
