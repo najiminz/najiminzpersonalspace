@@ -4,7 +4,7 @@ Thirty coloring pages about Malaysian culture, with a front and back cover. They
 
 - **Thick, clear lines** (line weight × 1.25) with plenty of white space for coloring.
 - **One main illustration per page**, never a collage.
-- **Consistent characters across the whole collection.** They share the same picture-book style: natural child proportions, big glossy anime-style eyes, eyebrows, a small nose, an open smile and hair drawn in locks:
+- **Consistent characters across the whole collection.** They all share the same body, face and line style:
   - **Amir**, a Malay boy
   - **Aisyah**, a Malay girl in a tudung
   - **Mei**, a Chinese girl

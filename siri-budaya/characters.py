@@ -22,7 +22,6 @@ CAST = {
 }
 
 SIT = 92  # how far the upper body drops when sitting
-HEAD_SCALE, NECK = 0.84, -200
 
 
 def solid(d, color=INK):
@@ -60,48 +59,6 @@ def face(pen, look, cx=0, cy=-262, gap=24, small=False):
     out += pen.path(f"M{cx - 17},{cy + 26} Q{cx},{cy + 46} {cx + 17},{cy + 26} Q{cx},{cy + 32} {cx - 17},{cy + 26} Z",
                     fill="#e57373", w=DW)
     return out
-
-
-FACE_D = "M-60,-292 C-62,-236 -44,-200 0,-194 C44,-200 62,-236 60,-292 C58,-340 -58,-340 -60,-292 Z"
-
-
-def anime_face(pen, look, cy=-258, gap=25, k=1.0):
-    """Big glossy eyes, brows, a small nose and an open smile, like a children's picture-book cartoon."""
-    out = ""
-    for side in (-1, 1):
-        ex = side * gap * k
-        # eye: upper lash line, iris, pupil and two highlights
-        out += pen.ellipse(ex, cy, 12 * k, 15 * k, fill="#6d4c41", sw=DW - 0.4)
-        out += f'<ellipse cx="{ex}" cy="{cy + 2 * k}" rx="{6.5 * k}" ry="{9 * k}" fill="{INK}"/>'
-        out += f'<circle cx="{ex + side * -4 * k + 3 * k}" cy="{cy - 6 * k}" r="{4.2 * k}" fill="#fff"/>'
-        out += f'<circle cx="{ex - 4 * k}" cy="{cy + 7 * k}" r="{2 * k}" fill="#fff"/>'
-        out += pen.path(f"M{ex - side * 16 * k},{cy - 6 * k} Q{ex},{cy - 22 * k} {ex + side * 15 * k},{cy - 9 * k} "
-                        f"L{ex + side * 19 * k},{cy - 14 * k}", fill="none", w=LW - 0.4)
-        out += pen.path(f"M{ex - 8 * k},{cy + 17 * k} Q{ex},{cy + 19 * k} {ex + 8 * k},{cy + 17 * k}", fill="none",
-                        w=1.4)
-        # eyebrow
-        out += pen.path(f"M{ex - side * 13 * k},{cy - 30 * k} Q{ex + side * 2 * k},{cy - 37 * k} {ex + side * 15 * k},"
-                        f"{cy - 31 * k}", fill="none", w=DW)
-        if pen.colored:
-            out += f'<ellipse cx="{side * 40 * k}" cy="{cy + 22 * k}" rx="{11 * k}" ry="{6 * k}" fill="#ff8a80" opacity="0.55"/>'
-    out += pen.path(f"M{-2 * k},{cy + 14 * k} Q{3 * k},{cy + 22 * k} {-3 * k},{cy + 24 * k}", fill="none", w=1.8)
-    mouth = (f"M{-15 * k},{cy + 34 * k} Q0,{cy + 38 * k} {15 * k},{cy + 34 * k} "
-             f"Q{12 * k},{cy + 54 * k} 0,{cy + 55 * k} Q{-12 * k},{cy + 54 * k} {-15 * k},{cy + 34 * k} Z")
-    out += pen.path(mouth, fill="#b71c1c", w=DW)
-    out += pen.path(f"M{-8 * k},{cy + 50 * k} Q0,{cy + 43 * k} {8 * k},{cy + 50 * k} Q0,{cy + 55 * k} {-8 * k},{cy + 50 * k} Z",
-                    fill="#ff8a80", w=1.2)
-    return out
-
-
-def head(pen, look):
-    """Ears, the oval face and its features (not the tudung, which frames a smaller face)."""
-    out = ""
-    if look["hair"] != "mei":
-        for side in (-1, 1):
-            out += pen.ellipse(side * 60, -252, 11, 17, fill=look["skin"], sw=DW + 0.4)
-            out += pen.path(f"M{side * 58},-258 Q{side * 64},-250 {side * 58},-244", fill="none", w=1.4)
-    out += pen.path(FACE_D, fill=look["skin"])
-    return out + anime_face(pen, look)
 
 
 def legs(pen, look, outfit, sit):
@@ -288,26 +245,21 @@ def hair_back(pen, look):
 def hair_front(pen, look):
     h = look["hair"]
     if h == "amir":
-        out = pen.path("M-68,-246 Q-80,-322 -36,-350 Q-6,-372 30,-360 Q76,-346 72,-282 L66,-246 L60,-280 L50,-268 "
-                       "L44,-298 L30,-280 L22,-306 L6,-284 L-6,-310 L-20,-286 L-32,-306 L-42,-282 L-54,-298 L-58,-262 Z",
-                       fill="#3e2723")
-        return out + pen.path("M-40,-338 Q-24,-326 -16,-308 M2,-352 Q16,-334 18,-312 M36,-344 Q48,-326 48,-306 "
-                              "M-60,-312 Q-56,-296 -54,-286 M-30,-366 Q-46,-374 -52,-364", fill="none", w=1.6)
+        out = pen.path("M-66,-262 Q-72,-342 0,-340 Q72,-342 66,-262 Q60,-300 32,-302 L20,-288 L6,-304 L-8,-288 "
+                       "L-24,-304 L-40,-290 Q-60,-294 -66,-262 Z", fill="#4e342e")
+        return out + pen.path("M-40,-328 Q-20,-318 -10,-306 M10,-334 Q30,-326 40,-306 M-58,-300 Q-50,-292 -48,-280",
+                              fill="none", w=1.6)
     if h == "ravi":
         out = ""
-        for x in (-48, -24, 0, 24, 48):
-            out += pen.path(f"M{x - 16},-296 Q{x - 14},-322 {x},-320 Q{x + 14},-322 {x + 16},-296 Q{x},-304 {x - 16},-296 Z",
-                            fill="#3e2723", w=DW)
-            out += pen.path(f"M{x - 6},-310 Q{x},-316 {x + 6},-310", fill="none", w=1.2)
+        for x in (-40, -14, 12, 38):
+            out += pen.path(f"M{x - 14},-300 Q{x},-322 {x + 14},-300 Q{x},-306 {x - 14},-300 Z", fill="#3e2723", w=DW)
         return out
     if h in ("mei", "lina"):
-        out = pen.path("M-64,-262 Q-68,-342 0,-342 Q68,-342 64,-262 L56,-286 L46,-292 L40,-282 L28,-294 L16,-284 "
-                       "L4,-296 L-8,-284 L-20,-294 L-32,-282 L-44,-292 L-56,-284 Z" if h == "mei" else
+        out = pen.path("M-64,-270 Q-66,-338 0,-338 Q66,-338 64,-270 L44,-296 L-44,-296 Z" if h == "mei" else
                        "M-66,-258 Q-70,-342 0,-340 Q70,-342 66,-258 Q60,-300 0,-306 Q-60,-300 -66,-258 Z",
                        fill="#212121")
         if h == "mei":
-            out += pen.path("M-30,-334 Q-28,-312 -24,-296 M0,-338 Q2,-314 4,-298 M30,-334 Q30,-312 26,-296",
-                            fill="none", w=1.6)
+            out += pen.path("M-26,-336 L-22,-298 M0,-338 L0,-298 M26,-336 L22,-298", fill="none", w=1.6)
             out += pen.path("M-56,-338 Q-44,-348 -40,-334 M56,-338 Q44,-348 40,-334", fill="none", w=1.6)
         if h == "lina":
             out += pen.line(0, -338, 0, -308, sw=DW)
@@ -364,21 +316,22 @@ def kid(pen, who, x, y, s=1.0, la=(-64, -112), ra=(64, -112), outfit=None, sit=F
     upper += torso(pen, look, outfit) if not (sit and outfit in ("kurung", "kaamatan")) else _sit_top(pen, look, outfit)
     torso_svg = upper
     upper = ""
-    pen.k /= HEAD_SCALE  # the head is drawn smaller (see below); keep its lines as thick as the body's
     upper += hair_back(pen, look)
     if look["hair"] == "tudung":
-        upper += pen.path("M-52,-280 C-54,-232 -38,-204 0,-198 C38,-204 54,-232 52,-280 C50,-322 -50,-322 -52,-280 Z",
-                          fill=look["skin"])
-        upper += anime_face(pen, look, cy=-256, gap=22, k=0.88)
+        upper += pen.ellipse(0, -258, 52, 58, fill=look["skin"])
+        upper += face(pen, look, cy=-256, gap=20, small=True)
     else:
-        upper += head(pen, look)
+        if look["hair"] != "mei":
+            upper += pen.circle(-64, -258, 13, fill=look["skin"], sw=DW + 0.6)
+            upper += pen.circle(64, -258, 13, fill=look["skin"], sw=DW + 0.6)
+        upper += pen.circle(0, -262, 64, fill=look["skin"])
+        upper += face(pen, look)
     upper += hair_front(pen, look)
     upper += hat(pen, headwear or {"bajumelayu": "songkok", "silat": "tanjak"}.get(outfit))
     if outfit == "angkasawan":
-        upper = in_helmet(pen, upper) + helmet(pen)
-    pen.k *= HEAD_SCALE
-    # natural child proportions: the head is shrunk around the neck so it is about a third of the height
-    upper = torso_svg + f'<g transform="translate(0,{NECK}) scale({HEAD_SCALE}) translate(0,{-NECK})">{upper}</g>'
+        upper = torso_svg + in_helmet(pen, upper) + helmet(pen)
+    else:
+        upper = torso_svg + upper
     upper += (arms if arms_front else "")
     if hands:
         upper += hand(pen, look, la) + hand(pen, look, ra)
