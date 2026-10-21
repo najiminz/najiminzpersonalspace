@@ -74,10 +74,10 @@ def legs(pen, look, outfit, sit):
     if outfit in ("tshirt",):
         for x in (-38, 6):
             out += pen.rect(x, -76, 32, 66, fill=look["skin"], rx=6)
-    elif outfit not in ("kurung", "kaamatan"):
+    elif outfit not in ("kurung", "kaamatan", "jururawat"):
         for x in (-40, 4):
             out += pen.rect(x, -116, 36, 106, fill=look["bottom"], rx=6)
-    if outfit not in ("tshirt", "kurung", "kaamatan"):
+    if outfit not in ("tshirt", "kurung", "kaamatan", "jururawat"):
         for x in (-22, 22):
             out += pen.line(x - 14, -34, x + 14, -34, sw=1.8)
     if outfit == "angkasawan":
@@ -127,11 +127,81 @@ def backpack(pen):
     return out + pen.tube("M-60,-232 Q-90,-270 -70,-300", 10, "#90a4ae")
 
 
+SHIRT = "M-48,-204 Q-62,-196 -60,-150 L-58,-98 L58,-98 L60,-150 Q62,-196 48,-204 Z"
+COAT_L = "M-50,-204 Q-66,-196 -64,-150 L-68,-52 L-8,-52 L-8,-150 L-22,-204 Z"
+
+
+def shirt(pen, top, buttons=True, pockets=True, belt="#5d4037"):
+    """Collared long-sleeve shirt tucked into trousers, with a belt."""
+    out = pen.path(SHIRT, fill=top)
+    out += pen.path("M-22,-206 L0,-180 L22,-206 L14,-212 L0,-196 L-14,-212 Z", fill=top, w=DW)
+    if buttons:
+        out += pen.line(0, -180, 0, -104, sw=1.6)
+        for y in (-166, -146, -126):
+            out += pen.circle(0, y, 3, fill="#ffffff", sw=1.2)
+    if pockets:
+        for x in (-40, 16):
+            out += pen.rect(x, -172, 24, 22, fill=top, rx=3, sw=1.6) + pen.line(x, -164, x + 24, -164, sw=1.4)
+    if belt:
+        out += pen.rect(-60, -108, 120, 12, fill=belt, rx=3, sw=DW) + pen.rect(-9, -110, 18, 16, fill="#fdd835", rx=3, sw=1.4)
+    return out
+
+
+def job_torso(pen, look, outfit):
+    top = look["top"]
+    if outfit == "seragam":
+        return shirt(pen, top)
+    if outfit == "askar":
+        out = shirt(pen, top)
+        inner = "".join(pen.path(blob_d(x, y, 13, 9, 7, x * 7 + y), fill="#33691e", w=1.4)
+                        for x, y in ((-36, -186), (24, -190), (-20, -140), (34, -132), (-44, -118), (6, -160)))
+        return out + pen.clipped(SHIRT, inner) + pen.path(SHIRT, fill="none")
+    if outfit == "kot":
+        out = shirt(pen, look.get("shirt", "#bbdefb"), pockets=False, belt=None)
+        for side in (1, -1):
+            out += f'<g transform="scale({side},1)">' + pen.path(COAT_L, fill="#ffffff")
+            out += pen.path("M-22,-204 L-8,-150 L-30,-170 Z", fill="#ffffff", w=1.6)
+            out += pen.rect(-56, -110, 30, 24, fill="#ffffff", rx=3, sw=1.6) + "</g>"
+        out += pen.line(-44, -112, -44, -132, sw=2.4) + pen.circle(-44, -134, 3, fill="#1e88e5", sw=1.2)
+        return out
+    if outfit == "chef":
+        out = pen.path("M-50,-204 Q-66,-196 -64,-150 L-62,-96 L62,-96 L64,-150 Q66,-196 50,-204 Z", fill="#ffffff")
+        out += pen.path("M-30,-204 L30,-204 L30,-96 L-10,-96 Z", fill="none", w=1.6)
+        for y in (-176, -150, -124):
+            for x in (-12, 16):
+                out += pen.circle(x, y, 3.4, fill="#ffffff", sw=1.4)
+        out += pen.path("M-26,-206 Q0,-186 26,-206 L14,-180 L0,-170 L-14,-180 Z", fill="#e53935", w=DW)
+        return out
+    if outfit == "rompi":
+        out = shirt(pen, top, pockets=False)
+        vest = "M-50,-204 Q-64,-196 -62,-150 L-60,-100 L-10,-100 L-12,-200 Z M50,-204 Q64,-196 62,-150 L60,-100 L10,-100 L12,-200 Z"
+        out += pen.path(vest, fill="#ff9800")
+        for y in (-170, -128):
+            out += pen.rect(-60, y, 48, 10, fill="#e0e0e0", sw=1.4) + pen.rect(12, y, 48, 10, fill="#e0e0e0", sw=1.4)
+        return out
+    if outfit == "bomba":
+        out = shirt(pen, top, buttons=False, pockets=False, belt="#424242")
+        out += pen.path("M-4,-200 L-4,-108", fill="none", w=DW)
+        for y in (-168, -134):
+            out += pen.rect(-60, y, 120, 12, fill="#fdd835", sw=1.6)
+        return out
+    if outfit == "jururawat":
+        out = pen.path("M-58,-112 L58,-112 L70,-16 L-70,-16 Z", fill="#ffffff")
+        out += pen.path("M-48,-204 Q-62,-196 -62,-150 L-64,-104 L64,-104 L62,-150 Q62,-196 48,-204 Z", fill="#ffffff")
+        out += pen.rect(-60, -112, 120, 10, fill="#90caf9", rx=3, sw=1.6)
+        out += pen.path("M-6,-168 h12 v-12 h10 v12 h12 v10 h-12 v12 h-10 v-12 h-12 Z", fill="#e53935", w=1.4)
+        return out
+    return None
+
+
 def torso(pen, look, outfit):
     top, bottom = look["top"], look["bottom"]
     out = ""
     if outfit == "angkasawan":
         return suit(pen, look)
+    job = job_torso(pen, look, outfit)
+    if job is not None:
+        return job
     if outfit == "tshirt":
         out += pen.path("M-50,-114 L50,-114 L46,-66 L6,-66 L0,-88 L-6,-66 L-46,-66 Z", fill=bottom)
         out += pen.path("M-44,-202 Q-58,-196 -56,-150 L-52,-108 L52,-108 L56,-150 Q58,-196 44,-202 Z", fill=top)
@@ -210,7 +280,7 @@ def hand(pen, look, pos):
 def arm(pen, look, outfit, side, hand):
     sx = -46 if side < 0 else 46
     hx, hy = hand
-    sleeve = look["top"]
+    sleeve = {"kot": "#ffffff", "chef": "#ffffff", "jururawat": "#ffffff"}.get(outfit, look["top"])
     out = ""
     if outfit == "tshirt":
         mx, my = sx + (hx - sx) * 0.32, -190 + (hy + 190) * 0.32
@@ -220,7 +290,8 @@ def arm(pen, look, outfit, side, hand):
         out += pen.tube(f"M{sx},-190 L{hx},{hy}", 26, sleeve)
         a, b = 0.8, 0.9
         cuff = {"bajumelayu": "#fdd835", "kurta": "#fff8e1", "kaamatan": "#fdd835", "samfu": "#fdd835",
-                "angkasawan": "#ff7043"}.get(outfit, sleeve)
+                "angkasawan": "#ff7043", "bomba": "#fdd835", "chef": "#ffffff",
+                "kot": "#ffffff", "jururawat": "#90caf9"}.get(outfit, sleeve)
         out += pen.tube(f"M{sx + (hx - sx) * a:.1f},{-190 + (hy + 190) * a:.1f} "
                         f"L{sx + (hx - sx) * b:.1f},{-190 + (hy + 190) * b:.1f}", 26, cuff)
     return out
@@ -287,6 +358,43 @@ def hat(pen, kind):
         out += pen.clipped(band, "".join(pen.path(f"M{x},-298 L{x + 11},-332 L{x + 22},-298", fill="#a5d6a7", w=1.4)
                                          for x in range(-72, 70, 22)))
         return out + pen.path(band, fill="none", w=DW)
+    if kind == "chef":
+        out = pen.path(blob_d(0, -392, 70, 48, 9, 5), fill="#ffffff")
+        return out + pen.path("M-56,-296 L-58,-352 Q0,-362 58,-352 L56,-296 Q0,-306 -56,-296 Z", fill="#ffffff")
+    if kind in ("polis", "juruterbang", "posmen"):
+        color = {"polis": "#1a237e", "juruterbang": "#ffffff", "posmen": "#e53935"}[kind]
+        out = pen.path("M-66,-312 Q-74,-376 0,-384 Q74,-376 66,-312 Z", fill=color)
+        out += pen.rect(-62, -330, 124, 20, fill="#212121" if kind != "posmen" else "#ffffff", rx=4, sw=DW)
+        out += pen.path("M-58,-312 Q0,-292 58,-312 Q0,-300 -58,-312 Z", fill="#212121", w=DW)
+        if kind == "juruterbang":
+            out += pen.path("M-30,-356 Q-14,-346 0,-352 Q14,-346 30,-356 Q14,-340 0,-344 Q-14,-340 -30,-356 Z",
+                            fill="#fdd835", w=1.4)
+        return out + pen.path("M0,-372 l9,9 -9,11 -9,-11 Z", fill="#fdd835", w=1.4)
+    if kind == "bomba":
+        out = pen.ellipse(0, -310, 92, 18, fill="#e53935", sw=DW + 0.6)
+        out += pen.path("M-64,-310 Q-66,-388 0,-390 Q66,-388 64,-310 Z", fill="#e53935")
+        out += pen.path("M0,-388 L0,-312", fill="none", w=DW)
+        return out + pen.path("M-14,-356 L14,-356 L12,-332 L0,-324 L-12,-332 Z", fill="#fdd835", w=1.6)
+    if kind == "keselamatan":
+        out = pen.ellipse(0, -312, 86, 14, fill="#fdd835", sw=DW + 0.6)
+        out += pen.path("M-66,-312 Q-68,-386 0,-388 Q68,-386 66,-312 Z", fill="#fdd835")
+        return out + pen.path("M-12,-386 L-12,-314 M12,-386 L12,-314", fill="none", w=DW)
+    if kind == "askar":
+        out = pen.path("M-70,-300 Q-74,-384 0,-388 Q74,-384 70,-300 Q0,-312 -70,-300 Z", fill="#558b2f")
+        return out + "".join(pen.path(blob_d(x, y, 12, 8, 7, x + 3), fill="#33691e", w=1.4)
+                             for x, y in ((-34, -352), (20, -364), (40, -326), (-10, -330)))
+    if kind == "caping":
+        out = pen.path("M-120,-300 L0,-392 L120,-300 Q0,-286 -120,-300 Z", fill="#e6c27a")
+        return out + pen.path("M-60,-346 L60,-346 M-90,-322 L90,-322", fill="none", w=1.6)
+    if kind == "beret":
+        return pen.path("M-70,-314 Q-80,-370 -10,-378 Q60,-384 76,-336 Q40,-316 -70,-314 Z", fill="#e53935") + \
+            pen.line(-6, -378, 0, -392, sw=DW)
+    if kind == "topi":
+        out = pen.path("M-64,-312 Q-66,-380 0,-382 Q66,-380 64,-312 Z", fill="#1e88e5")
+        return out + pen.path("M-64,-316 Q-110,-312 -116,-300 Q-70,-298 -40,-310", fill="#1e88e5", w=DW)
+    if kind == "jururawat":
+        out = pen.path("M-44,-346 L44,-346 L36,-380 L-36,-380 Z", fill="#ffffff")
+        return out + pen.path("M-5,-374 h10 v8 h8 v8 h-8 v8 h-10 v-8 h-8 v-8 h8 Z", fill="#e53935", w=1.2)
     if kind == "songkok":
         return pen.path("M-50,-318 L-46,-356 Q0,-366 46,-356 L50,-318 Q0,-326 -50,-318 Z", fill="#212121")
     if kind == "tanjak":
@@ -327,7 +435,8 @@ def kid(pen, who, x, y, s=1.0, la=(-64, -112), ra=(64, -112), outfit=None, sit=F
         upper += pen.circle(0, -262, 64, fill=look["skin"])
         upper += face(pen, look)
     upper += hair_front(pen, look)
-    upper += hat(pen, headwear or {"bajumelayu": "songkok", "silat": "tanjak"}.get(outfit))
+    cap = hat(pen, headwear or {"bajumelayu": "songkok", "silat": "tanjak"}.get(outfit))
+    upper += f'<g transform="translate(0,-14)">{cap}</g>' if look["hair"] == "tudung" and cap else cap
     if outfit == "angkasawan":
         upper = torso_svg + in_helmet(pen, upper) + helmet(pen)
     else:
