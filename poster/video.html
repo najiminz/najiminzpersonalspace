@@ -1,0 +1,169 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: Fredoka; font-weight: 600; src: url(../siri-kenderaan/fonts/Fredoka-SemiBold.ttf); }
+@font-face { font-family: Fredoka; font-weight: 700; src: url(../siri-kenderaan/fonts/Fredoka-Bold.ttf); }
+:root { --navy: #1c2a5a; --red: #e8402f; --pink: #ec407a; --yellow: #fdd835; --green: #43a047; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; }
+body { font-family: Fredoka, sans-serif; color: var(--navy); position: relative; background: linear-gradient(#29b6f6, #81d4fa 50%, #e1f5fe); }
+
+/* shared scenery */
+.rainbow { position: absolute; left: 50%; top: 260px; width: 1500px; height: 1500px; margin-left: -750px; border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 56%, #8e24aa 56% 58.5%, #1e88e5 58.5% 61%, #43a047 61% 63.5%,
+  #fdd835 63.5% 66%, #ff9800 66% 68.5%, #e8402f 68.5% 71%, transparent 71%); opacity: .5;
+  animation: spin 22s linear both; }
+.sun { position: absolute; right: 30px; top: 40px; width: 200px; height: 200px; animation: spin 22s linear both; }
+.cloud { position: absolute; background: #fff; border-radius: 60px; }
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.cloud::before { width: 60%; height: 150%; left: 12%; top: -70%; }
+.cloud::after { width: 42%; height: 120%; right: 10%; top: -50%; }
+.c1 { left: 40px; top: 300px; width: 190px; height: 56px; animation: drift 22s linear both; }
+.c2 { left: 300px; top: 120px; width: 150px; height: 44px; animation: drift 22s linear both reverse; }
+.grass { position: absolute; left: -60px; right: -60px; bottom: -80px; height: 420px; border-radius: 50% 50% 0 0 / 90px 90px 0 0;
+  background: linear-gradient(#8fd36b, #4c9c30); border-top: 6px solid #3f8a2a; }
+.logo { position: absolute; top: 70px; left: 50%; margin-left: -190px; width: 380px; background: #fff; border-radius: 26px; padding: 16px 30px;
+  box-shadow: 0 8px 0 rgba(28,42,90,.18); animation: pop .6s cubic-bezier(.3,1.6,.5,1) .2s both; }
+.logo img { width: 100%; display: block; }
+
+.scene { position: absolute; inset: 0; }
+.big { font-weight: 700; text-align: center; line-height: 1; }
+.big span { display: inline-block; -webkit-text-stroke: 16px var(--navy); paint-order: stroke fill; }
+.ribbon { position: absolute; left: 50%; translate: -50% 0; background: var(--red); color: #fff; font-weight: 700;
+  font-size: 44px; letter-spacing: 3px; padding: 10px 60px; white-space: nowrap;
+  clip-path: polygon(0 0, 100% 0, 96% 50%, 100% 100%, 0 100%, 4% 50%); }
+.outline { color: #fff; text-shadow: 0 4px 0 var(--navy), 3px 0 0 var(--navy), -3px 0 0 var(--navy), 0 -3px 0 var(--navy); }
+
+/* scene 1: title */
+.s1 { animation: out .4s ease 4.2s forwards; }
+.s1 .ribbon { top: 520px; animation: pop .5s cubic-bezier(.3,1.6,.5,1) .7s both; }
+.s1 .big { position: absolute; top: 650px; width: 100%; font-size: 176px; }
+.s1 .big span { animation: drop .6s cubic-bezier(.3,1.6,.5,1) both; }
+.s1 .tag { position: absolute; top: 1150px; width: 100%; text-align: center; font-size: 58px; font-weight: 700; animation: up .5s ease 2.6s both; }
+
+/* scene 2: one cover at a time */
+.s2 { opacity: 0; animation: in .3s ease 4.4s forwards, out .4s ease 10.9s forwards; }
+.slide { position: absolute; left: 50%; top: 330px; width: 640px; margin-left: -320px; opacity: 0; }
+.slide img { width: 100%; border-radius: 18px; border: 8px solid #fff; box-shadow: 0 18px 36px rgba(28,42,90,.35); display: block; }
+.slide .name { margin-top: 26px; font-size: 56px; font-weight: 700; text-align: center; }
+
+/* scene 3: all ten */
+.s3 { opacity: 0; animation: in .4s ease 11.1s forwards, out .4s ease 14.6s forwards; }
+.s3 .head { position: absolute; top: 330px; width: 100%; font-size: 78px; font-weight: 700; text-align: center; animation: up .5s ease 11.2s both; }
+.grid { position: absolute; top: 470px; left: 110px; right: 110px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 36px; }
+.grid img { width: 100%; aspect-ratio: 1 / 0.56; object-fit: cover; object-position: top; border-radius: 14px; border: 6px solid #fff;
+  box-shadow: 0 10px 20px rgba(28,42,90,.3); display: block; animation: pop .45s cubic-bezier(.3,1.6,.5,1) both; }
+.grid img:nth-child(odd) { transform: rotate(-2deg); }
+.grid img:nth-child(even) { transform: rotate(2deg); }
+
+/* scene 4: price */
+.s4 { opacity: 0; animation: in .3s ease 14.8s forwards, out .4s ease 19.4s forwards; }
+.s4 .ribbon { top: 380px; animation: pop .5s cubic-bezier(.3,1.6,.5,1) 14.9s both; }
+.burst { position: absolute; left: 50%; top: 500px; width: 620px; height: 620px; margin-left: -310px; animation: pop .6s cubic-bezier(.3,1.6,.5,1) 15.2s both; }
+.burst svg { position: absolute; inset: 0; animation: spin 22s linear both; }
+.burst .txt { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; color: #fff; }
+.old { font-size: 96px; font-weight: 700; color: #ffe082; position: relative; display: inline-block; justify-self: center; }
+.old::after { content: ""; position: absolute; left: -10px; right: -10px; top: 52%; height: 6px; background: #fff; border-radius: 3px;
+  box-shadow: 0 0 0 2px var(--navy); transform-origin: left; animation: strike .4s ease 16s both; }
+.new { font-size: 210px; font-weight: 700; line-height: .95; -webkit-text-stroke: 18px var(--navy); paint-order: stroke fill; animation: pulse 1s ease 16.5s 3 both; }
+.new small { font-size: 96px; }
+.sahaja { font-size: 70px; font-weight: 700; }
+.deal { position: absolute; top: 1180px; left: 70px; right: 70px; background: #fff; border: 7px solid var(--navy); border-radius: 36px; padding: 28px;
+  text-align: center; font-size: 76px; font-weight: 700; line-height: 1.15; box-shadow: 0 10px 0 rgba(28,42,90,.25); animation: up .5s ease 17s both; }
+.deal b { color: var(--red); } .deal i { font-style: normal; color: var(--green); }
+
+/* scene 5: features and contact */
+.s5 { opacity: 0; animation: in .3s ease 19.6s forwards; }
+.s5 .head { position: absolute; top: 340px; width: 100%; text-align: center; font-size: 76px; font-weight: 700; animation: up .5s ease 19.7s both; }
+.ticks { position: absolute; top: 500px; left: 90px; right: 90px; display: grid; gap: 26px; }
+.ticks div { background: #fff; border-radius: 26px; padding: 22px 28px; font-size: 50px; font-weight: 600; display: flex; align-items: center; gap: 22px;
+  box-shadow: 0 8px 0 rgba(28,42,90,.18); animation: right .45s ease both; }
+.ticks div::before { content: "✓"; flex: none; width: 64px; height: 64px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 44px; }
+.cta { position: absolute; left: 60px; right: 60px; top: 1230px; border-radius: 40px; background: var(--pink); border: 7px solid #fff; padding: 30px 20px;
+  box-shadow: 0 10px 0 rgba(28,42,90,.3); color: #fff; text-align: center; animation: pop .6s cubic-bezier(.3,1.6,.5,1) 21.6s both, pulse 1.2s ease 22.4s 4; }
+.cta .q { font-size: 52px; font-weight: 600; }
+.cta .no { font-size: 92px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 20px; }
+.cta .wa { width: 96px; height: 96px; border-radius: 50%; background: #25d366; border: 5px solid #fff; display: grid; place-items: center; }
+.cta .nm { font-size: 58px; font-weight: 700; }
+
+@keyframes pop { from { transform: scale(0); opacity: 0; } to { opacity: 1; } }
+@keyframes drop { from { transform: translateY(-500px); opacity: 0; } to { opacity: 1; } }
+@keyframes up { from { transform: translateY(80px); opacity: 0; } to { opacity: 1; } }
+@keyframes right { from { transform: translateX(-120px); opacity: 0; } to { opacity: 1; } }
+@keyframes in { to { opacity: 1; } }
+@keyframes out { to { opacity: 0; } }
+@keyframes spin { from { rotate: 0deg; } to { rotate: 40deg; } }
+@keyframes drift { from { translate: 0 0; } to { translate: 140px 0; } }
+@keyframes strike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes pulse { 50% { scale: 1.08; } }
+@keyframes show { 0% { opacity: 0; transform: scale(.6) rotate(-8deg); } 12% { opacity: 1; transform: none; } 88% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateX(-200px) rotate(-6deg); } }
+</style></head>
+<body>
+  <div class="rainbow"></div>
+  <svg class="sun" viewBox="0 0 170 170"><g id="rays" fill="#ffca28" stroke="#f9a825" stroke-width="3" stroke-linejoin="round"></g>
+    <circle cx="85" cy="85" r="48" fill="#fdd835" stroke="#f9a825" stroke-width="5"/></svg>
+  <div class="cloud c1"></div><div class="cloud c2"></div>
+  <div class="grass"></div>
+  <div class="logo"><img src="fskxpert.png" alt=""></div>
+
+  <section class="scene s1">
+    <div class="ribbon">KOLEKSI E-BOOK</div>
+    <div class="big" id="title"></div>
+    <div class="tag outline">untuk si manja di rumah!</div>
+  </section>
+
+  <section class="scene s2" id="slides"></section>
+
+  <section class="scene s3">
+    <div class="head outline">10 Siri • 300 Halaman</div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="scene s4">
+    <div class="ribbon">HARGA PROMOSI</div>
+    <div class="burst">
+      <svg viewBox="0 0 300 300"><polygon id="star" fill="#e8402f" stroke="#1c2a5a" stroke-width="6" stroke-linejoin="round"/>
+        <circle cx="150" cy="150" r="104" fill="#e8402f" stroke="#fff" stroke-width="6"/></svg>
+      <div class="txt"><div class="old">RM20</div><div class="new"><small>RM</small>15!</div><div class="sahaja">sahaja!</div></div>
+    </div>
+    <div class="deal"><b>9 Set Buku</b><br>+ <i>PERCUMA 1 Buku!</i></div>
+  </section>
+
+  <section class="scene s5">
+    <div class="head outline">Kenapa pilih kami?</div>
+    <div class="ticks">
+      <div style="animation-delay:20s">E-book PDF saiz A4</div>
+      <div style="animation-delay:20.35s">Cetak berulang kali</div>
+      <div style="animation-delay:20.7s">Garisan tebal, mudah diwarna</div>
+      <div style="animation-delay:21.05s">Prasekolah &amp; sekolah rendah</div>
+    </div>
+    <div class="cta">
+      <div class="q">Sebarang pertanyaan:</div>
+      <div class="no"><span class="wa"><svg width="56" height="56" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 13.8c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg></span>010-263 7597</div>
+      <div class="nm">(Cik Nia)</div>
+    </div>
+  </section>
+
+<script>
+const BOOKS = [["1-haiwan","Siri 1: Haiwan Comel"],["2-buah","Siri 2: Buah & Sayur"],["3-kerjaya","Siri 3: Kerjaya Impian"],
+  ["4-kenderaan","Siri 4: Kenderaan"],["5-keluarga","Siri 5: Keluarga Bahagia"],["6-alam","Siri 6: Alam Sekitar"],
+  ["7-angkasa","Siri 7: Angkasa Lepas"],["8-budaya","Siri 8: Budaya Malaysia"],["9-anak-soleh","Siri 9: Anak Soleh"],["10-abc","Siri 10: ABC 123"]];
+const colors = ["#e8402f","#ff9800","#fdd835","#43a047","#1e88e5","#8e24aa","#ec407a","#00acc1","#e8402f","#ff9800","#43a047"];
+document.getElementById("title").innerHTML = "BUKU<br>MEWARNA".split("").map((ch, i) =>
+  ch === "<" ? "<br>" : (/[a-z>]/.test(ch) ? "" : `<span style="color:${colors[i % colors.length]};animation-delay:${(1 + i * .1).toFixed(2)}s">${ch}</span>`)).join("");
+document.getElementById("slides").innerHTML = BOOKS.map(([f, n], i) =>
+  `<div class="slide" style="animation: show .65s linear ${(4.5 + i * .64).toFixed(2)}s both"><img src="kulit/sama-${f}.png"><div class="name outline">${n}</div></div>`).join("");
+document.getElementById("grid").innerHTML = BOOKS.map(([f], i) =>
+  `<img src="kulit/sama-${f}.png" style="animation-delay:${(11.3 + i * .12).toFixed(2)}s">`).join("");
+const pts = [];
+for (let k = 0; k < 32; k++) { const r = k % 2 ? 118 : 146, a = Math.PI * k / 16 - Math.PI / 2;
+  pts.push((150 + r * Math.cos(a)).toFixed(1) + "," + (150 + r * Math.sin(a)).toFixed(1)); }
+document.getElementById("star").setAttribute("points", pts.join(" "));
+let rays = "";
+for (let k = 0; k < 12; k++) { const a = Math.PI * k / 6, p = (r, t) => (85 + r * Math.cos(t)).toFixed(1) + "," + (85 + r * Math.sin(t)).toFixed(1);
+  rays += `<polygon points="${p(56, a - .13)} ${p(80, a)} ${p(56, a + .13)}"/>`; }
+document.getElementById("rays").innerHTML = rays;
+window.seek = t => { for (const a of document.getAnimations()) { a.pause(); a.currentTime = t * 1000; } };
+</script>
+</body></html>
