@@ -106,7 +106,7 @@ function imgRow(rels, w, caps) {
 const c = (xs, after = 100, size = 24, bold = false) => new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after },
   children: [].concat(xs).map(t => typeof t === 'string' ? new TextRun({ text: t, size, bold }) : t) });
 const cover = [
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 600 }, children: [img('upsi.png', 230), new TextRun('        '), img('fskxpert.png', 190)] }),
+  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 600 }, children: [img('upsi.png', 280)] }),
   c('LAPORAN AKTIVITI PEMASARAN', 200, 36, true),
   c('E-BOOK BUKU MEWARNA FSKXPERT', 80, 28, true),
   c('MELALUI WHATSAPP DAN MEDIA SOSIAL', 900, 28, true),
