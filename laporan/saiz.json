@@ -1,1 +1,46 @@
-{"fskxpert.png": {"width": 339, "height": 122}, "aliran-jualan.png": {"width": 1344, "height": 578}, "poster-jualan-ebook.png": {"width": 2160, "height": 2700}}
+{
+"fskxpert.png": {
+"width": 339,
+"height": 122
+},
+"aliran-jualan.png": {
+"width": 1344,
+"height": 578
+},
+"poster-jualan-ebook.png": {
+"width": 2160,
+"height": 2700
+},
+"upsi.png": {
+"width": 1100,
+"height": 519
+},
+"poster.jpg": {
+"width": 1080,
+"height": 1350
+},
+"bukti/demo-15.jpg": {
+"width": 540,
+"height": 960
+},
+"bukti/demo-27.jpg": {
+"width": 540,
+"height": 960
+},
+"bukti/demo-3.jpg": {
+"width": 540,
+"height": 960
+},
+"bukti/demo-9.jpg": {
+"width": 540,
+"height": 960
+},
+"bukti/promosi-20.jpg": {
+"width": 540,
+"height": 960
+},
+"bukti/promosi-4.jpg": {
+"width": 540,
+"height": 960
+}
+}
