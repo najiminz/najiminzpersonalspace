@@ -155,7 +155,7 @@ const body = [
   h1('4.0 SKOP DAN TEMPOH AKTIVITI'),
   table(['Perkara', 'Butiran'], [
     ['Tempoh', [isi('[tarikh mula] hingga [tarikh tamat]')]],
-    ['Platform utama', 'WhatsApp Business: Status, senarai siaran, kumpulan, mesej automatik'],
+    ['Platform utama', 'WhatsApp (akaun peribadi): Status, senarai siaran, kumpulan dan chat'],
     ['Platform sokongan', [isi('[TikTok / Instagram / Facebook: padam yang tidak berkenaan]')]],
     ['Sasaran pasaran', 'Ibu bapa, guru prasekolah, pengusaha tadika dan taska'],
   ], [2600, 6426]),
@@ -168,7 +168,7 @@ const body = [
     ['Video promosi', 'Video menegak 26 saat', 'Status WhatsApp, TikTok, Reels'],
     ['Video demo produk', 'Video menegak 31 saat yang menunjukkan isi buku dan cara penggunaan', 'Status WhatsApp, TikTok, Reels'],
     ['Kapsyen jualan', 'Teks promosi dengan senarai siri, harga dan hashtag', 'Semua platform'],
-    ['Mesej auto-balas', 'Mesej sapaan, mesej tidak hadir dan 7 balasan pantas', 'WhatsApp Business'],
+    ['Templat mesej balasan', 'Mesej sedia ada untuk salam, harga, cara pembayaran, penghantaran fail dan susulan', 'Chat WhatsApp'],
   ], [2200, 4426, 2400]),
   gap(),
   centerImg('poster.jpg', 330),
@@ -176,10 +176,12 @@ const body = [
   imgRow(['bukti/demo-3.jpg', 'bukti/demo-9.jpg', 'bukti/demo-27.jpg'], 150,
     ['Video demo: babak pembuka', 'Video demo: isi buku', 'Video demo: harga dan tawaran']),
 
-  h2('5.2 Persediaan Akaun WhatsApp Business'),
-  p('Saya telah menyediakan akaun WhatsApp Business supaya pertanyaan pelanggan dapat diurus dengan cepat dan teratur. Antara persediaan yang dibuat ialah profil perniagaan, katalog produk, mesej sapaan automatik, mesej tidak hadir, balasan pantas dan label pelanggan.'),
-  bukti(['profil perniagaan WhatsApp', 'Profil perniagaan'], ['katalog produk RM15', 'Katalog produk']),
-  bukti(['mesej sapaan automatik', 'Mesej sapaan automatik'], ['senarai balasan pantas', 'Balasan pantas']),
+  h2('5.2 Persediaan Akaun WhatsApp'),
+  p('Pemasaran dijalankan menggunakan akaun WhatsApp peribadi. Akaun ini tidak mempunyai ciri automatik seperti WhatsApp Business, jadi saya membuat persediaan berikut supaya pertanyaan dapat diurus dengan cepat dan teratur:'),
+  bullet('Mengemas kini gambar profil dan ruangan Info dengan maklumat produk.'),
+  bullet('Menyediakan templat mesej balasan untuk salam, harga, cara pembayaran dan penghantaran fail. Templat ini disalin dan dihantar secara manual kepada setiap pelanggan.'),
+  bullet('Menyematkan (pin) chat pelanggan yang belum selesai supaya tidak tertinggal.'),
+  bukti(['profil dan Info WhatsApp', 'Profil WhatsApp'], ['templat mesej yang disimpan', 'Templat mesej balasan']),
 
   h2('5.3 Hebahan melalui Status WhatsApp'),
   p([new TextRun('Saya memuat naik poster, video dan contoh halaman ke Status WhatsApp sebanyak '), isi('[bilangan]'), new TextRun(' kali sepanjang tempoh kempen. Jumlah tontonan direkodkan seperti dalam jadual di bawah.')]),
@@ -200,8 +202,8 @@ const body = [
   bukti(['hantaran media sosial', 'Hantaran di media sosial'], ['statistik hantaran (tontonan, suka)', 'Statistik hantaran']),
 
   h2('5.6 Pengurusan Pertanyaan dan Jualan'),
-  p('Setiap pertanyaan diurus mengikut aliran dalam Rajah di bawah. Pelanggan yang membeli dihantar fail PDF selepas pembayaran disahkan, manakala pelanggan yang belum membeli dihantar satu mesej susulan.'),
-  centerImg('aliran-jualan.png', 560),
+  p('Setiap pertanyaan dibalas secara manual menggunakan templat mesej, mengikut aliran dalam Rajah di bawah. Pelanggan yang membeli dihantar fail PDF selepas pembayaran disahkan, manakala pelanggan yang belum membeli dihantar satu mesej susulan.'),
+  centerImg('aliran-peribadi.png', 560),
   caption('Aliran pengurusan pertanyaan dan jualan'),
   p([new TextRun({ text: 'Nota: ', bold: true }), new TextRun('Nama dan nombor telefon pelanggan dalam tangkap layar telah dikaburkan bagi melindungi privasi mereka.')]),
   bukti(['perbualan dengan pelanggan', 'Contoh pertanyaan pelanggan'], ['bukti fail dihantar kepada pembeli', 'Penghantaran fail kepada pembeli']),
@@ -209,7 +211,7 @@ const body = [
   h1('6.0 LOG AKTIVITI'),
   p('Jadual berikut merekodkan aktiviti pemasaran yang telah dijalankan mengikut tarikh.'),
   table(['Bil', 'Tarikh', 'Aktiviti', 'Platform', 'Hasil', 'Bukti'], [
-    ['Contoh', '3/11/2026', 'Muat naik poster jualan ke Status', 'WhatsApp', '52 tontonan, 3 pertanyaan', 'Rajah 9'],
+    ['Contoh', '3/11/2026', 'Muat naik poster jualan ke Status', 'WhatsApp', '52 tontonan, 3 pertanyaan', 'Rajah 7'],
     ...blank(10, 6),
   ], [900, 1300, 2726, 1300, 1700, 1100], { example: true, height: 400 }),
 
@@ -229,8 +231,8 @@ const body = [
 
   h1('8.0 MASALAH DAN PENYELESAIAN'),
   table(['Masalah', 'Penyelesaian'], [
-    ['Pertanyaan diterima di luar waktu kerja', 'Memasang mesej tidak hadir supaya pelanggan tahu bila akan dibalas'],
-    ['Soalan yang sama ditanya berulang kali', 'Menyediakan balasan pantas seperti /senarai, /bayar dan /cetak'],
+    ['Akaun WhatsApp peribadi tiada mesej automatik', 'Menyediakan templat mesej yang boleh disalin dan dihantar dengan cepat'],
+    ['Pertanyaan diterima di luar waktu kerja', 'Membalas seawal mungkin keesokan harinya dan menyematkan chat yang belum dibalas'],
     ['Pelanggan bertanya tetapi tidak membeli', 'Menghantar satu mesej susulan selepas 1 hingga 2 hari'],
     ['Mesej siaran hanya sampai kepada kenalan yang menyimpan nombor', 'Meminta pelanggan menyimpan nombor dan berkongsi poster di Status'],
     [[isi('[tambah masalah lain]')], [isi('[penyelesaian]')]],
@@ -238,7 +240,7 @@ const body = [
 
   h1('9.0 PENGALAMAN DAN PEMBELAJARAN'),
   p('Melalui aktiviti ini, saya telah memperoleh beberapa kemahiran dan pengalaman baharu:'),
-  bullet('Menggunakan ciri WhatsApp Business seperti katalog, mesej automatik, balasan pantas dan label.'),
+  bullet('Menggunakan ciri WhatsApp seperti Status, senarai siaran dan kumpulan untuk tujuan pemasaran.'),
   bullet('Menyediakan kandungan promosi seperti poster, video dan kapsyen yang menarik.'),
   bullet('Berkomunikasi dengan pelanggan secara profesional dan menjawab pertanyaan dengan cepat.'),
   bullet('Merekod dan menganalisis data seperti tontonan, pertanyaan dan jualan.'),
@@ -247,11 +249,11 @@ const body = [
   h1('10.0 CADANGAN'),
   bullet('Meletakkan notis hak cipta pada fail PDF bagi mengelakkan perkongsian tanpa izin.'),
   bullet('Menyediakan pakej lesen khas untuk tadika dan sekolah.'),
-  bullet('Menggunakan aplikasi chatbot bagi membalas pertanyaan secara automatik apabila jualan meningkat.'),
+  bullet('Beralih kepada WhatsApp Business supaya boleh menggunakan katalog, mesej sapaan automatik, balasan pantas dan label pelanggan.'),
   bullet('Mengumpul lebih banyak testimoni dan gambar hasil mewarna sebagai bukti sosial.'),
 
   h1('11.0 KESIMPULAN'),
-  p('Secara keseluruhannya, WhatsApp dan media sosial merupakan saluran yang berkesan untuk memasarkan produk digital seperti e-book buku mewarna. Ciri WhatsApp Business membantu saya mengurus pertanyaan dengan lebih cepat dan teratur.'),
+  p('Secara keseluruhannya, WhatsApp dan media sosial merupakan saluran yang berkesan untuk memasarkan produk digital seperti e-book buku mewarna. Walaupun menggunakan akaun peribadi, Status dan senarai siaran WhatsApp membantu saya mencapai ramai kenalan dengan cepat, manakala templat mesej memudahkan saya membalas pertanyaan.'),
   p([isi('[Tambah satu ayat tentang pencapaian utama kempen, contohnya jumlah jualan atau pertanyaan yang diterima.]')]),
 
   gap(),
@@ -271,13 +273,13 @@ const body = [
   }),
 
   pageBreak(),
-  h1('LAMPIRAN A: MESEJ AUTO-BALAS WHATSAPP'),
-  p('Mesej sapaan automatik yang dipasang pada akaun WhatsApp Business:'),
+  h1('LAMPIRAN A: TEMPLAT MESEJ BALASAN WHATSAPP'),
+  p('Templat mesej salam yang dihantar kepada setiap pelanggan yang bertanya:'),
   ...fs.readFileSync(path.join(ROOT, 'poster/auto-balas-whatsapp.txt'), 'utf8')
     .match(/1\) MESEJ SAPAAN[^\n]*\n=+\n([\s\S]*?)\n=+\n2\)/)[1].trim().split('\n')
     .map(l => new Paragraph({ spacing: { after: 40 }, indent: { left: 360 }, children: [new TextRun({ text: l.replace('~RM20~ ', 'RM20, kini ').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, '').replace(/\*/g, '').replace(/~/g, '').replace(/ +/g, ' ').trim(), size: 20 })] })),
   gap(),
-  p('Balasan pantas yang disediakan: /senarai, /bayar, /terima, /cetak, /syarat, /susulan dan /terimakasih.'),
+  p('Templat lain yang disediakan: senarai buku, cara pembayaran, penghantaran fail, tip mencetak, syarat penggunaan, mesej susulan dan ucapan terima kasih.'),
 
   pageBreak(),
   h1('LAMPIRAN B: BUKTI TAMBAHAN'),
