@@ -95,7 +95,7 @@ for par in P[5:7] + P[13:16]:
     drop(par)
 write(P[9], ' ' + NAMA)
 write(P[11], ' ' + MATRIK)
-write(P[22], [' ', ('[Nama pensyarah penyelia]',)])
+write(P[22], ' Prof. Madya Dr. Kamarul bin Ismail')
 write(P[23], ORGANISASI)
 write(P[24], [('[tarikh mula]',), ' hingga ', ('[tarikh tamat]',)])
 
@@ -117,13 +117,54 @@ a = after(a, ['Selain pengajaran dan penyelidikan, FSK menjalankan aktiviti keus
               '(fskxpert.upsi.my). Salah satu produknya ialah koleksi e-book buku mewarna untuk kanak-kanak yang '
               'diterbitkan di bawah nama FSKXpert. ',
               ('[Tambah: bilangan jabatan, program yang ditawarkan dan anggaran bilangan kakitangan FSK.]',)])
+a = after(a, 'Sepanjang latihan, saya diselia oleh Prof. Madya Dr. Kamarul bin Ismail, Timbalan Dekan (Jaringan '
+             'Industri dan Pengkomersialan), Fakulti Sains Kemanusiaan (e-mel: kamarul.ismail@fsk.upsi.edu.my, '
+             'telefon: 05-450 5121).')
 
 a = after(a, '1.2 Sejarah Penubuhan', bold=True, space=3)
-a = after(a, 'UPSI berakar umbi daripada Maktab Perguruan Sultan Idris (Sultan Idris Training College, SITC) yang '
-             'ditubuhkan di Tanjong Malim pada tahun 1922. Institusi ini kemudiannya dinaik taraf beberapa kali '
-             'sebelum diisytiharkan sebagai Universiti Pendidikan Sultan Idris pada tahun 1997.')
-a = after(a, [('[Tambah: tahun penubuhan FSK, nama asal fakulti (jika ada), perkembangan penting dan pencapaian '
-               'utama fakulti. Rujuk laman web rasmi FSK atau risalah fakulti.]',)])
+a = after(a, 'Sejarah UPSI bermula lebih seratus tahun yang lalu. Pada 29 November 1922, Sultan Idris Training '
+             'College (SITC) dirasmikan di Tanjong Malim, Perak sebagai maktab perguruan untuk melatih guru-guru '
+             'Melayu. Maktab ini dinamakan sempena Sultan Idris Murshidul Azzam Shah, Sultan Perak ke-28, dan '
+             'pengetua pertamanya ialah O.T. Dussek.')
+a = after(a, 'SITC bukan sahaja melahirkan guru, malah menjadi pusat kebangkitan nasionalisme, bahasa dan '
+             'kesusasteraan Melayu. Ramai bekas pelajarnya kemudian menjadi tokoh pendidik, sasterawan dan pejuang '
+             'kemerdekaan. Jadual 1.1 meringkaskan perkembangan institusi ini.')
+cap = after(a, 'Jadual 1.1: Perkembangan SITC hingga menjadi UPSI', align=WD_ALIGN_PARAGRAPH.CENTER, space=3)
+cap.runs[0].italic = True
+timeline = d.add_table(rows=1, cols=2)
+timeline.style = d.styles['Table Grid']
+timeline.alignment = WD_TABLE_ALIGNMENT.CENTER
+for cell, text in zip(timeline.rows[0].cells, ('Tahun', 'Peristiwa')):
+    cell.paragraphs[0].add_run(text).bold = True
+for year, event in [
+    ('1922', 'Sultan Idris Training College (SITC) dirasmikan di Tanjong Malim pada 29 November 1922.'),
+    ('1957', 'Ditukar nama kepada Maktab Perguruan Sultan Idris (MPSI) selepas negara mencapai kemerdekaan.'),
+    ('1987', 'Dinaik taraf menjadi Institut Perguruan Sultan Idris (IPSI).'),
+    ('1997', 'Dinaik taraf menjadi universiti dengan nama Universiti Pendidikan Sultan Idris (UPSI) pada 1 Mei 1997.'),
+]:
+    row = timeline.add_row().cells
+    row[0].paragraphs[0].add_run(year)
+    row[1].paragraphs[0].add_run(event)
+timeline.autofit = False
+timeline.columns[0].width, timeline.columns[1].width = Inches(0.9), Inches(5.0)
+for row in timeline.rows:
+    row.cells[0].width, row.cells[1].width = Inches(0.9), Inches(5.0)
+    for cell in row.cells:
+        for r in cell.paragraphs[0].runs:
+            r.font.size = Pt(10)
+cap._p.addnext(timeline._tbl)
+a = after(cap, 'Hari ini UPSI beroperasi di dua kampus di Tanjong Malim, iaitu Kampus Sultan Abdul Jalil Shah '
+               '(kampus asal) dan Kampus Sultan Azlan Shah di Proton City, dan menawarkan program pengajian '
+               'melalui beberapa fakulti.')
+timeline._tbl.addnext(a._p)
+a.paragraph_format.space_before = Pt(8)
+a = after(a, ['Fakulti Sains Kemanusiaan pula pada peringkat awal berkongsi fakulti dengan bidang muzik sebelum '
+              'dipisahkan dan berdiri sendiri sebagai Fakulti Sains Kemanusiaan. ',
+              ('[Sahkan dan lengkapkan: nama asal fakulti gabungan tersebut, tahun FSK ditubuhkan sebagai fakulti '
+               'sendiri, jabatan di bawahnya dan pencapaian utama fakulti.]',)])
+a = after(a, 'Dalam usaha pengkomersialan, FSK menubuhkan FSKXpert di bawah portfolio Timbalan Dekan (Jaringan '
+             'Industri dan Pengkomersialan). Melalui FSKXpert, kepakaran warga fakulti diterjemahkan kepada produk '
+             'dan perkhidmatan, termasuk koleksi e-book buku mewarna yang saya hasilkan semasa latihan ini.')
 
 a = after(a, '1.3 Visi dan Misi', bold=True, space=3)
 a = after(a, ['Visi: ', ('[Salin visi rasmi FSK daripada laman web atau dokumen fakulti.]',)])
