@@ -138,28 +138,29 @@ a.runs[0].italic = True
 # ---------- 2. Ringkasan aktiviti ----------
 drop(P[34])
 a = after(P[33], 'Jadual 2.1 meringkaskan aktiviti utama yang saya jalankan setiap minggu. Bukti bagi setiap '
-                 'aktiviti dipaparkan dalam Rajah 2.1 hingga Rajah 2.8 selepas jadual.')
+                 'aktiviti dipaparkan dalam Rajah 2.1 hingga Rajah 2.9 selepas jadual.')
 WEEKS = [
     ('Minggu 1',
      'Taklimat dan pengenalan kepada FSK dan FSKXpert. Mereka bentuk templat buku mewarna dan menghasilkan '
-     'Siri 4: Kenderaan (30 halaman, saiz A4, 300 DPI) berserta kulit hadapan dan belakang.',
-     'Reka bentuk ilustrasi garisan, penyediaan fail cetakan resolusi tinggi, konsistensi templat.',
-     'kulit-4-kenderaan.jpg', 'Rajah 2.1'),
+     'koleksi e-book: Siri 4: Kenderaan, Siri 8: Budaya Malaysia, Siri 10: ABC, Nombor dan Bentuk serta '
+     'Siri 7: Angkasa Lepas (30 halaman setiap siri, saiz A4, 300 DPI). Membuat pembetulan berdasarkan semakan.',
+     'Reka bentuk ilustrasi garisan, penyediaan fail cetakan resolusi tinggi, kawalan kualiti, penggunaan alat AI.',
+     'kulit-4-kenderaan.jpg', 'Rajah 2.1 - 2.4'),
     ('Minggu 2',
-     'Menghasilkan Siri 8: Budaya Malaysia, Siri 10: ABC, Nombor dan Bentuk serta Siri 7: Angkasa Lepas. '
-     'Membuat pembetulan berdasarkan semakan (bendera, logo, kandungan) dan menyediakan prompt AI untuk kulit buku.',
-     'Kawalan kualiti, penggunaan alat AI secara beretika, menerima dan mengambil tindakan atas maklum balas.',
-     'kulit-8-budaya.jpg', 'Rajah 2.2 - 2.4'),
-    ('Minggu 3',
-     'Melaksanakan pemasaran koleksi e-book: poster jualan, kapsyen, video promosi dan video demo, templat mesej, '
-     'serta hebahan melalui Status, senarai siaran dan kumpulan WhatsApp pada harga promosi RM15.',
+     'Menghasilkan bahan promosi: poster jualan, kapsyen, video promosi dan video demo serta templat mesej. '
+     'Mempromosikan e-book melalui Status, senarai siaran dan kumpulan WhatsApp pada harga promosi RM15.',
      'Pemasaran digital, strategi harga promosi, komunikasi dengan pelanggan, penghasilan video.',
-     'poster.jpg', 'Rajah 2.5 - 2.6'),
+     'poster.jpg', 'Rajah 2.5 - 2.7'),
+    ('Minggu 3',
+     'Tugasan baharu: mereka bentuk sijil penyertaan SG.Bernam X UPSI Fun Trail Run 2026, termasuk memasukkan '
+     'logo UPSI dan FSK di bahagian penganjur. Meneruskan promosi e-book.',
+     'Reka bentuk grafik untuk acara, mematuhi identiti visual penganjur, mengurus beberapa tugasan serentak.',
+     'sijil.jpg', 'Rajah 2.8'),
     ('Minggu 4',
-     'Menyediakan laporan pemasaran dan laporan aktiviti kepada penyelia. Mereka bentuk sijil penyertaan '
-     'SG.Bernam X UPSI Fun Trail Run 2026 dan memulakan Siri 3: Kerjaya Impian.',
-     'Penulisan laporan formal, analisis data jualan, reka bentuk grafik untuk acara.',
-     'sijil.jpg', 'Rajah 2.7 - 2.8'),
+     'Menyediakan laporan pemasaran dan laporan aktiviti kepada penyelia berserta bukti. Merekod hasil promosi '
+     'dan memulakan Siri 3: Kerjaya Impian.',
+     'Penulisan laporan formal, analisis data jualan, pengurusan masa.',
+     'kulit-3-kerjaya.jpg', 'Rajah 2.9'),
 ]
 for row, (week, act, skill, img, ref) in zip(T[0].rows[1:], WEEKS):
     for cell, text in zip(row.cells[:3], (week, act, skill)):
@@ -191,7 +192,8 @@ a = picture_row(a, [('wau-garis.jpg', 'Contoh halaman: garisan'),
                     ('poster.jpg', 'Rajah 2.5: Poster jualan'),
                     ('video-demo.jpg', 'Rajah 2.6: Video demo produk')], 1.25)
 a = picture(a, 'aliran.jpg', 5.6, 'Rajah 2.7: Aliran pengurusan pertanyaan dan jualan melalui WhatsApp')
-a = picture(a, 'sijil.jpg', 2.4, 'Rajah 2.8: Sijil penyertaan SG.Bernam X UPSI Fun Trail Run 2026')
+a = picture_row(a, [('sijil.jpg', 'Rajah 2.8: Sijil penyertaan SG.Bernam X UPSI Fun Trail Run 2026'),
+                    ('kulit-3-kerjaya.jpg', 'Rajah 2.9: Kulit Siri 3 Kerjaya Impian')], 2.0)
 
 # ---------- 3. SWOT ----------
 drop(P[37])
