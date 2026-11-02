@@ -1,0 +1,150 @@
+<title>Prompt Buku Mewarna</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap">
+<style>
+/* Layout: a crayon-box header, series tabs as chunky crayon chips, then one card per page prompt with a big copy button. */
+:root {
+  --bg: #fffaf2;
+  --paper: #ffffff;
+  --ink: #2b2118;
+  --muted: #7a6a5c;
+  --line: #eadfce;
+  --code-bg: #fbf5ea;
+  --accent: #e8402f;
+  --accent-ink: #ffffff;
+  --ok: #2e8b57;
+  --chip: #fde3c8;
+  --display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d1814; --paper: #28211b; --ink: #f6ece0; --muted: #b9a896; --line: #3d3329;
+    --code-bg: #211b16; --accent: #ff6a55; --accent-ink: #1d1814; --ok: #6fd39b; --chip: #4a3527;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1d1814; --paper: #28211b; --ink: #f6ece0; --muted: #b9a896; --line: #3d3329;
+  --code-bg: #211b16; --accent: #ff6a55; --accent-ink: #1d1814; --ok: #6fd39b; --chip: #4a3527;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: grid; gap: 10px; margin-bottom: 22px; }
+.crayons { display: flex; gap: 6px; }
+.crayons span { width: 34px; height: 10px; border-radius: 5px 12px 12px 5px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 6vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.lead { color: var(--muted); margin: 0; max-width: 62ch; }
+.steps { display: grid; gap: 8px; margin: 6px 0 0; padding: 14px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; }
+.steps ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 16px; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); padding-block: 10px; z-index: 5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.tab { font-family: var(--display); font-weight: 600; font-size: 15px; border: 2px solid var(--ink); background: var(--paper); color: var(--ink);
+  border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.tab:focus-visible, .copy:focus-visible, .copyall:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.bar h2 { font-family: var(--display); font-size: 22px; margin: 0; }
+.list { display: grid; gap: 12px; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.card summary { display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; list-style: none; }
+.card summary::-webkit-details-marker { display: none; }
+.badge { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+  display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 15px; box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--ink); }
+.badge.cover { background: var(--chip); color: var(--ink); font-size: 12px; }
+.label { flex: 1; min-width: 0; font-family: var(--display); font-weight: 600; font-size: 17px; }
+.copy, .copyall { font-family: var(--display); font-weight: 600; font-size: 14px; border: 0; border-radius: 10px; padding: 8px 14px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer; flex: none; }
+.copy.done, .copyall.done { background: var(--ok); }
+pre { margin: 0; padding: 14px; background: var(--code-bg); border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px;
+  white-space: pre-wrap; word-break: break-word; max-height: 340px; overflow: auto; }
+.hint { font-size: 13px; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .copy, .tab { transition: background .15s ease, color .15s ease; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="crayons" aria-hidden="true">
+      <span style="background:#e8402f"></span><span style="background:#ff9800"></span><span style="background:#fdd835"></span>
+      <span style="background:#43a047"></span><span style="background:#1e88e5"></span><span style="background:#8e24aa"></span>
+    </div>
+    <h1>Prompt Buku Mewarna</h1>
+    <p class="lead">Satu prompt untuk setiap halaman Siri 4, 7, 8 dan 10, dalam gaya halaman "Keluarga Saya". Tekan <b>Salin</b>, kemudian tampal di Gemini.</p>
+    <div class="steps">
+      <ol>
+        <li>Jana <b>helaian watak</b> sekali dahulu (di bawah), dan simpan gambar yang paling cantik.</li>
+        <li>Untuk setiap halaman, muat naik gambar <b>Keluarga Saya</b> dan helaian watak itu, kemudian tampal prompt halaman tersebut.</li>
+        <li>Jana satu halaman pada satu masa. Kalau kurang cantik, tekan jana semula.</li>
+      </ol>
+    </div>
+  </header>
+
+  <details class="card" id="sheet">
+    <summary><span class="badge cover" aria-hidden="true">★</span><span class="label">Helaian watak (jana sekali dahulu)</span>
+      <button class="copy" type="button" data-target="sheet-text">Salin</button></summary>
+    <pre id="sheet-text">__SHEET__</pre>
+  </details>
+
+  <nav class="tabs" role="tablist" aria-label="Siri"></nav>
+  <section>
+    <div class="bar"><h2 id="series-name"></h2><span class="hint">Tekan nama halaman untuk lihat prompt penuh.</span></div>
+    <div class="list" id="list"></div>
+  </section>
+</div>
+
+<script>
+const SERIES = __DATA__;
+
+async function copyText(text, btn) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const area = document.createElement("textarea");
+    area.value = text; document.body.appendChild(area); area.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    area.remove();
+  }
+  const old = btn.textContent;
+  btn.textContent = "Disalin ✓"; btn.classList.add("done");
+  setTimeout(() => { btn.textContent = old; btn.classList.remove("done"); }, 1600);
+}
+
+function badgeFor(label) {
+  const m = label.match(/^(\d+)\./);
+  if (m) return `<span class="badge" aria-hidden="true">${m[1]}</span>`;
+  return `<span class="badge cover" aria-hidden="true">${label.includes("depan") ? "Depan" : "Blkg"}</span>`;
+}
+
+function esc(s) { return s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); }
+
+function show(id) {
+  const s = SERIES.find(x => x.id === id) || SERIES[0];
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.id === s.id));
+  document.getElementById("series-name").textContent = s.name;
+  document.getElementById("list").innerHTML = s.prompts.map((p, i) => `
+    <details class="card">
+      <summary>${badgeFor(p.label)}<span class="label">${esc(p.label.replace(/^\d+\.\s*/, ""))}</span>
+        <button class="copy" type="button" data-i="${i}">Salin</button></summary>
+      <pre>${esc(p.text)}</pre>
+    </details>`).join("");
+  document.querySelectorAll("#list .copy").forEach(b => b.addEventListener("click", e => {
+    e.preventDefault(); copyText(s.prompts[+b.dataset.i].text, b);
+  }));
+  try { localStorage.setItem("siri", s.id); } catch (_) {}
+  if (location.hash !== "#" + s.id) history.replaceState(null, "", "#" + s.id);
+}
+
+const nav = document.querySelector(".tabs");
+nav.innerHTML = SERIES.map(s => `<button class="tab" role="tab" type="button" data-id="${s.id}">${s.name.split(":")[0]}<span class="hint" style="color:inherit;opacity:.75">: ${s.name.split(": ")[1]}</span></button>`).join("");
+nav.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => show(t.dataset.id)));
+document.querySelector('#sheet .copy').addEventListener("click", e => {
+  e.preventDefault(); copyText(document.getElementById("sheet-text").textContent, e.currentTarget);
+});
+
+let start = location.hash.slice(1);
+if (!start) { try { start = localStorage.getItem("siri") || ""; } catch (_) {} }
+show(start || SERIES[0].id);
+</script>
