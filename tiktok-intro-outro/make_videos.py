@@ -30,10 +30,8 @@ LOGO_PATH = os.path.join(HERE, "logo.png")
 UNI_NAME = "UNIVERSITI POLY-TECH MALAYSIA"
 SHOW_UNI_NAME = True                   # auto-sembunyi bila logo.png ada (logo dah ada nama)
 INTRO_TAGLINE = ""                     # contoh: "Projek Algoritma TSP"
-OUTRO_TITLE = "Terima Kasih!"
-OUTRO_LINE = "kerana menonton"
-OUTRO_CTA = "Follow  •  Like  •  Share"
-TIKTOK_HANDLE = "@username"            # tukar ke username TikTok awak
+OUTRO_TITLE = "Thank You"
+OUTRO_LINE = "for watching!"
 
 BG_TOP = (8, 20, 56)        # biru gelap
 BG_BOTTOM = (2, 6, 20)
@@ -41,7 +39,7 @@ ACCENT = (245, 184, 46)     # emas
 TEXT = (255, 255, 255)
 
 W, H, FPS = 1080, 1920, 30
-INTRO_SEC, OUTRO_SEC = 3.5, 5.0
+INTRO_SEC, OUTRO_SEC = 3.5, 4.0
 # Pusat kandungan dinaikkan sedikit supaya tak bertindih dengan UI TikTok di bawah
 CY = int(H * 0.42)
 
@@ -298,8 +296,6 @@ def main():
     f_tag = font(FONT_REG, 50)
     f_title = font(FONT_BOLD, 120)
     f_line = font(FONT_REG, 54)
-    f_cta = font(FONT_SEMI, 46)
-    f_handle = font(FONT_BOLD, 62)
 
     # Logo sebenar dah ada nama universiti, jadi teks nama hanya untuk placeholder
     show_name = SHOW_UNI_NAME and not os.path.exists(LOGO_PATH)
@@ -344,11 +340,9 @@ def main():
            [("whoosh", 0.55, 0.9), ("chime", 0.95, 0.5, 880.0), ("chime", 1.25, 0.25, 1318.5)])
 
     # -------------------------------- OUTRO
-    oy = int(H * 0.26)
+    oy = int(H * 0.34)
     title_img = text_layer(OUTRO_TITLE, f_title, TEXT + (255,))
     line_img = text_layer(OUTRO_LINE, f_line, (210, 220, 240, 255))
-    cta_img = text_layer(OUTRO_CTA, f_cta, BG_TOP + (255,), tracking=2)
-    handle_img = text_layer(TIKTOK_HANDLE, f_handle, ACCENT + (255,))
     small_r = int(math.hypot(small_logo.width, small_logo.height) / 2) + 35
 
     def outro(t):
@@ -368,30 +362,15 @@ def main():
             q = ease_out_cubic(prog(t, start, 0.6))
             paste_center(c, img, W / 2, y + dy + 50 * (1 - q), 1, q)
 
-        # butang CTA
-        q = ease_out_back(prog(t, 1.4, 0.6), 1.3)
-        if q > 0:
-            pill_w, pill_h = cta_img.width + 90, 110
-            pill = Image.new("RGBA", (pill_w, pill_h), (0, 0, 0, 0))
-            ImageDraw.Draw(pill).rounded_rectangle([0, 0, pill_w - 1, pill_h - 1], 55,
-                                                   fill=ACCENT + (255,))
-            pill.alpha_composite(cta_img, ((pill_w - cta_img.width) // 2,
-                                           (pill_h - cta_img.height) // 2 + 2))
-            pulse = 1 + 0.03 * math.sin(max(0, t - 2.0) * 5)
-            paste_center(c, pill, W / 2, y + 290, q * pulse, clamp(q))
-
-        hq = ease_out_cubic(prog(t, 1.8, 0.6))
-        paste_center(c, handle_img, W / 2, y + 440 + 30 * (1 - hq), 1, hq)
-
         if name_img:
-            paste_center(c, name_img, W / 2, y + 560, 0.85, ease_out_cubic(prog(t, 2.1, 0.6)) * 0.7)
+            paste_center(c, name_img, W / 2, y + 260, 0.85, ease_out_cubic(prog(t, 1.3, 0.6)) * 0.7)
 
         fade(c, 1 - prog(t, 0, 0.3))
         fade(c, ease_in_out(prog(t, OUTRO_SEC - 0.6, 0.6)))
         return c
 
     render(os.path.join(HERE, "outro.mp4"), OUTRO_SEC, outro,
-           [("whoosh", 0.35, 0.8), ("chime", 0.75, 0.45, 659.25), ("chime", 1.45, 0.4, 987.77)])
+           [("whoosh", 0.35, 0.8), ("chime", 0.75, 0.45, 659.25), ("chime", 1.05, 0.4, 987.77)])
 
     print("Siap: intro.mp4 & outro.mp4")
 
