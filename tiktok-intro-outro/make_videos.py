@@ -28,6 +28,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 LOGO_PATH = os.path.join(HERE, "logo.png")
 
 UNI_NAME = "UNIVERSITI POLY-TECH MALAYSIA"
+SHOW_UNI_NAME = True                   # auto-sembunyi bila logo.png ada (logo dah ada nama)
 INTRO_TAGLINE = ""                     # contoh: "Projek Algoritma TSP"
 OUTRO_TITLE = "Terima Kasih!"
 OUTRO_LINE = "kerana menonton"
@@ -93,26 +94,28 @@ def make_background():
     return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGB")
 
 
-def make_logo(max_size=560):
-    """Muat logo; jika tiada, buat placeholder ringkas."""
+def make_logo(max_w=560, max_h=560):
+    """Muat logo (dibesarkan/dikecilkan ikut kotak); jika tiada, buat placeholder."""
     if os.path.exists(LOGO_PATH):
         logo = Image.open(LOGO_PATH).convert("RGBA")
-        logo.thumbnail((max_size, max_size), Image.LANCZOS)
         alpha = np.array(logo)[..., 3]
         has_transparency = (alpha < 250).mean() > 0.02
+        pad = 0 if has_transparency else int(min(max_w, max_h) * 0.09)
+        k = min((max_w - pad * 2) / logo.width, (max_h - pad * 2) / logo.height)
+        logo = logo.resize((int(logo.width * k), int(logo.height * k)), Image.LANCZOS)
+        if k > 1.2:
+            logo = logo.filter(ImageFilter.UnsharpMask(radius=2, percent=80, threshold=2))
         if has_transparency:
             return logo
-        # latar tak telus -> letak atas kad putih bulat
-        pad = 60
+        # latar tak telus -> letak atas kad putih bucu bulat
         card = Image.new("RGBA", (logo.width + pad * 2, logo.height + pad * 2), (0, 0, 0, 0))
         ImageDraw.Draw(card).rounded_rectangle(
-            [0, 0, card.width - 1, card.height - 1], radius=60, fill=(255, 255, 255, 255))
+            [0, 0, card.width - 1, card.height - 1], radius=pad, fill=(255, 255, 255, 255))
         card.alpha_composite(logo, (pad, pad))
-        card.thumbnail((max_size, max_size), Image.LANCZOS)
         return card
 
+    s = min(max_w, max_h)
     print("!! logo.png tiada - guna placeholder. Letak logo sebenar dalam folder ini.")
-    s = max_size
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     d.ellipse([10, 10, s - 10, s - 10], fill=(255, 255, 255, 255))
@@ -286,9 +289,9 @@ def main():
     bg = make_background().convert("RGBA")
     particles = Particles()
 
-    logo = make_logo(560)
+    logo = make_logo(800, 560)
     glow, gpad = make_glow(logo)
-    small_logo = make_logo(380)
+    small_logo = make_logo(620, 380)
     small_glow, _ = make_glow(small_logo, 30)
 
     f_name = font(FONT_SEMI, 40)
@@ -298,9 +301,11 @@ def main():
     f_cta = font(FONT_SEMI, 46)
     f_handle = font(FONT_BOLD, 62)
 
-    name_img = text_layer(UNI_NAME, f_name, TEXT + (255,), tracking=6)
+    # Logo sebenar dah ada nama universiti, jadi teks nama hanya untuk placeholder
+    show_name = SHOW_UNI_NAME and not os.path.exists(LOGO_PATH)
+    name_img = text_layer(UNI_NAME, f_name, TEXT + (255,), tracking=6) if show_name else None
     tag_img = text_layer(INTRO_TAGLINE, f_tag, ACCENT + (255,))
-    ring_r = max(logo.width, logo.height) // 2 + 60
+    ring_r = int(math.hypot(logo.width, logo.height) / 2) + 45
 
     # -------------------------------- INTRO
     def intro(t):
@@ -324,10 +329,12 @@ def main():
         if line_w > 0:
             ImageDraw.Draw(c).rounded_rectangle(
                 [W / 2 - line_w / 2, ty - 55, W / 2 + line_w / 2, ty - 49], 3, fill=ACCENT + (255,))
-        paste_center(c, name_img, W / 2, ty + 40 * (1 - tp), 1, tp)
+        if name_img:
+            paste_center(c, name_img, W / 2, ty + 40 * (1 - tp), 1, tp)
         if tag_img:
             tp2 = ease_out_cubic(prog(t, 1.5, 0.6))
-            paste_center(c, tag_img, W / 2, ty + 85 + 40 * (1 - tp2), 1, tp2)
+            ty2 = ty + (85 if name_img else 20)
+            paste_center(c, tag_img, W / 2, ty2 + 40 * (1 - tp2), 1, tp2)
 
         fade(c, 1 - prog(t, 0, 0.25))                       # masuk dari hitam
         fade(c, ease_in_out(prog(t, INTRO_SEC - 0.45, 0.45)))  # keluar ke hitam
@@ -342,7 +349,7 @@ def main():
     line_img = text_layer(OUTRO_LINE, f_line, (210, 220, 240, 255))
     cta_img = text_layer(OUTRO_CTA, f_cta, BG_TOP + (255,), tracking=2)
     handle_img = text_layer(TIKTOK_HANDLE, f_handle, ACCENT + (255,))
-    small_r = max(small_logo.width, small_logo.height) // 2 + 45
+    small_r = int(math.hypot(small_logo.width, small_logo.height) / 2) + 35
 
     def outro(t):
         c = bg.copy()
@@ -376,7 +383,8 @@ def main():
         hq = ease_out_cubic(prog(t, 1.8, 0.6))
         paste_center(c, handle_img, W / 2, y + 440 + 30 * (1 - hq), 1, hq)
 
-        paste_center(c, name_img, W / 2, y + 560, 0.85, ease_out_cubic(prog(t, 2.1, 0.6)) * 0.7)
+        if name_img:
+            paste_center(c, name_img, W / 2, y + 560, 0.85, ease_out_cubic(prog(t, 2.1, 0.6)) * 0.7)
 
         fade(c, 1 - prog(t, 0, 0.3))
         fade(c, ease_in_out(prog(t, OUTRO_SEC - 0.6, 0.6)))
