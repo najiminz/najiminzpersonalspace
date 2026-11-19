@@ -81,17 +81,51 @@ def make_grain(seed=3):
 
 
 def make_logo_card():
-    card = mv.make_logo(820, 560)
-    # bayang lembut di bawah kad
-    pad = 80
-    shadow = Image.new("L", (card.width + pad * 2, card.height + pad * 2), 0)
-    ImageDraw.Draw(shadow).rounded_rectangle(
-        [pad, pad + 26, pad + card.width, pad + card.height + 26], radius=50, fill=170)
-    shadow = shadow.filter(ImageFilter.GaussianBlur(30))
-    sh = Image.new("RGBA", shadow.size, (0, 0, 0, 0))
-    sh.putalpha(shadow)
-    sh.alpha_composite(card, (pad, pad))
-    return sh, card, pad
+    """Logo tanpa latar putih + garis luar putih + cahaya putih lembut."""
+    src = Image.open(mv.LOGO_PATH).convert("RGB")
+    up = 4
+    big = src.resize((src.width * up, src.height * up), Image.LANCZOS)
+    rgb = np.asarray(big).astype(np.float32)
+    h, w = rgb.shape[:2]
+
+    # putih -> telus ("color to alpha")
+    alpha = np.clip((255 - rgb).max(axis=2) / 255 * 1.15, 0, 1)
+
+    # heksagon biru & heksagon merah kecil: kekalkan putih di dalamnya
+    keep = np.zeros((h, w), bool)
+    blue = (rgb[..., 2] > 120) & (rgb[..., 0] < 110)
+    red = (rgb[..., 0] > 150) & (rgb[..., 1] < 110)
+    for mask, x_max, y_max in ((blue, 108 * up, h), (red, 135 * up, 36 * up)):
+        sub = mask[:y_max, :x_max]
+        for y in range(sub.shape[0]):
+            xs = np.nonzero(sub[y])[0]
+            if xs.size:
+                keep[y, xs.min():xs.max() + 1] = True
+    alpha = np.where(keep, 1.0, alpha)
+
+    a = alpha[..., None]
+    color = np.where(a > 0.01, (rgb - 255 * (1 - a)) / np.maximum(a, 1e-3), 255)
+    color = np.where(keep[..., None], rgb, color)
+    logo = Image.fromarray(np.clip(np.dstack([color, alpha * 255]), 0, 255).astype(np.uint8), "RGBA")
+
+    target_w = 900
+    logo = logo.resize((target_w, int(h * target_w / w)), Image.LANCZOS)
+    logo = logo.filter(ImageFilter.UnsharpMask(radius=2, percent=60, threshold=1))
+
+    pad = 140
+    la = Image.new("L", (logo.width + pad * 2, logo.height + pad * 2), 0)
+    la.paste(logo.split()[3], (pad, pad))
+
+    stroke = la.filter(ImageFilter.MaxFilter(15)).filter(ImageFilter.GaussianBlur(1.5))
+    glow = la.filter(ImageFilter.MaxFilter(21)).filter(ImageFilter.GaussianBlur(45))
+
+    out = Image.new("RGBA", la.size, (255, 255, 255, 0))
+    out.putalpha(glow.point(lambda v: int(min(255, v * 1.6))))
+    st = Image.new("RGBA", la.size, (255, 255, 255, 0))
+    st.putalpha(stroke)
+    out.alpha_composite(st)
+    out.alpha_composite(logo, (pad, pad))
+    return out, logo, pad
 
 
 # ---------------------------------------------------------------- efek kaca
@@ -180,11 +214,11 @@ def main():
     grain = make_grain()
     card_with_shadow, card, card_pad = make_logo_card()
     card_alpha = np.asarray(card.split()[3]).astype(np.float32) / 255
-    logo_cy = int(H * 0.44)
+    logo_cy = int(H * 0.40)
 
-    # kawasan gelap lembut di belakang logo supaya logo jelas
+    # kabus putih lembut di belakang logo (macam contoh) supaya logo jelas
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
-    behind = np.exp(-(((xx - W / 2) / 620) ** 2 + ((yy - logo_cy) / 420) ** 2))[..., None]
+    behind = np.exp(-(((xx - W / 2) / 650) ** 2 + ((yy - logo_cy) / 380) ** 2))[..., None]
 
     def frame(t):
         sharp = building_frame(big, scale, t)
@@ -200,10 +234,9 @@ def main():
         if cl is not None:
             img = img + cl * mask
 
-        # gelapkan sedikit belakang logo + vignette (lebih kuat sebelum logo muncul)
         logo_p = ease_out_cubic(prog(t, *T_LOGO))
-        img = img * (1 - 0.28 * behind * logo_p)
-        img = img * vignette
+        img = img + (255 - img) * (0.22 * behind * logo_p)
+        img = img * (1 - (1 - vignette) * (1 - 0.6 * open_p))
 
         # kecerahan: mula gelap
         bright = 0.08 + 0.92 * glass_on
