@@ -45,12 +45,12 @@ def load_building():
     return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)), scale
 
 
-def building_frame(big, scale, t):
-    """Pan perlahan dari kiri ke kanan + zoom masuk sikit."""
-    k = 1.0 - 0.06 * ease_in_out(t / SECONDS)
+def building_frame(big, scale, t, x_from=300, x_to=490, seconds=SECONDS):
+    """Pan perlahan (x_from -> x_to, koordinat gambar asal) + zoom masuk sikit."""
+    k = 1.0 - 0.06 * ease_in_out(t / seconds)
     cw, ch = W * k, H * k
     # pusat dalam koordinat gambar asal (1024x768)
-    cx_src = 300 + 190 * ease_in_out(t / SECONDS)
+    cx_src = x_from + (x_to - x_from) * ease_in_out(t / seconds)
     cx = cx_src * scale
     cy = big.height * 0.47
     cx = clamp(cx, cw / 2, big.width - cw / 2)
